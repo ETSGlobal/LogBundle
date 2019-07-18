@@ -1,0 +1,13 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+    - vendor/jangregor/phpstan-prophecy/src/extension.neon
+
+parameters:
+    excludes_analyse:
+        - %rootDir%/../../../vendor
+    ignoreErrors:
+        # Global errors to be ignored
+        - ## Issue with @var SomeObject&ObjectProphecy or ObjectProphecy<SomeObject>
+            message: '/^PHPDoc tag @var for property [a-zA-Z\\]+::\$[a-zA-Z]+ contains unresolvable type\.$/'
+            path: %currentWorkingDirectory%/tests/*

@@ -1,0 +1,38 @@
+<?php
+
+$finder = PhpCsFixer\Finder::create()
+    ->exclude(['vendor'])
+    ->in(__DIR__)
+;
+
+return PhpCsFixer\Config::create()
+    ->setRules([
+        '@Symfony' => true,
+        '@Symfony:risky' => true,
+        '@PSR1' => true,
+        '@PSR2' => true,
+        '@PhpCsFixer' => true,
+        '@PhpCsFixer:risky' => true,
+        '@DoctrineAnnotation' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'list_syntax' => ['syntax' => 'short'],
+        'class_definition' => [
+            'multiLineExtendsEachSingleLine' => true,
+            'singleItemSingleLine' => true,
+        ],
+        'declare_strict_types' => true,
+        'blank_line_after_opening_tag' => false,
+        'linebreak_after_opening_tag' => true,
+        'yoda_style' => null,
+        'phpdoc_annotation_without_dot' => false,
+        'phpdoc_order' => false,
+        'phpdoc_types_order' => ['null_adjustment' => 'always_last'],
+        'php_unit_internal_class' => false,
+        'php_unit_test_case_static_method_calls' => ['call_type' => 'this'],
+        'php_unit_method_casing' => ['case' => 'snake_case'],
+        'php_unit_test_annotation' => ['style' => 'annotation'],
+        'php_unit_test_class_requires_covers' => false,
+        'php_unit_strict' => false,
+    ])
+    ->setFinder($finder)
+;
