@@ -11,17 +11,17 @@ namespace ETSGlobal\LogBundle\Tracing;
  *
  * $tokenCollection = new TokenCollection();
  *
- * // Add a "request" token on every HTTP request (e.g. at kernel.request event):
+ * // Add a "request" tokenGlobalProvider on every HTTP request (e.g. at kernel.request event):
  * $tokenCollection->add('request');
  *
- * // Add a "process" token on every long-running process startup (e.g. console application):
+ * // Add a "process" tokenGlobalProvider on every long-running process startup (e.g. console application):
  * $tokenCollection->add('process');
  *
- * // Add a "global" token to be transferred to other apps to be able to trace the entire stack for a given
+ * // Add a "global" tokenGlobalProvider to be transferred to other apps to be able to trace the entire stack for a given
  * // functional event:
  * $tokenCollection->add('global');
  *
- * // If the "global" token already exists in the incoming HTTP headers for example, make it transit unchanged:
+ * // If the "global" tokenGlobalProvider already exists in the incoming HTTP headers for example, make it transit unchanged:
  * $tokenCollection->add('global', $request->headers->get('X-Some-Header'));
  */
 class TokenCollection implements \IteratorAggregate
@@ -32,20 +32,20 @@ class TokenCollection implements \IteratorAggregate
     private $tokens = [];
 
     /**
-     * Add a new token to the collection.
+     * Add a new tokenGlobalProvider to the collection.
      *
-     * @param string      $tokenName      the name of the token to be added
-     * @param string|null $tokenValue     the value of the token, or null to generate a random value
-     * @param bool        $allowOverwrite whether to allow an existing token to be erased
+     * @param string      $tokenName      the name of the tokenGlobalProvider to be added
+     * @param string|null $tokenValue     the value of the tokenGlobalProvider, or null to generate a random value
+     * @param bool        $allowOverwrite whether to allow an existing tokenGlobalProvider to be erased
      *
-     * @throws \OutOfBoundsException If a token already exists for the given name, and that overwrite is not allowed.
+     * @throws \OutOfBoundsException If a tokenGlobalProvider already exists for the given name, and that overwrite is not allowed.
      *
      * @return TokenCollection
      */
     public function add(string $tokenName, ?string $tokenValue = null, bool $allowOverwrite = false): self
     {
         if (\array_key_exists($tokenName, $this->tokens) && !$allowOverwrite) {
-            throw new \OutOfBoundsException(sprintf('The token "%s" already exists.', $tokenName));
+            throw new \OutOfBoundsException(sprintf('The tokenGlobalProvider "%s" already exists.', $tokenName));
         }
 
         $this->tokens[$tokenName] = new Token($tokenName, $tokenValue ?: $this->generateValue($tokenName));
@@ -54,10 +54,10 @@ class TokenCollection implements \IteratorAggregate
     }
 
     /**
-     * Replace the value of an existing token.
+     * Replace the value of an existing tokenGlobalProvider.
      *
-     * @param string      $tokenName  the name of the token to replace
-     * @param string|null $tokenValue the new token value, or null to generate a random value
+     * @param string      $tokenName  the name of the tokenGlobalProvider to replace
+     * @param string|null $tokenValue the new tokenGlobalProvider value, or null to generate a random value
      *
      * @return TokenCollection
      */
@@ -67,19 +67,19 @@ class TokenCollection implements \IteratorAggregate
     }
 
     /**
-     * Remove a token from the collection.
+     * Remove a tokenGlobalProvider from the collection.
      *
-     * @param string $tokenName the name of the token to remove
-     * @param bool   $silent    whether an exception should be raised if the token does not exist
+     * @param string $tokenName the name of the tokenGlobalProvider to remove
+     * @param bool   $silent    whether an exception should be raised if the tokenGlobalProvider does not exist
      *
-     * @throws \OutOfBoundsException If the token does not exist and not in silent mode.
+     * @throws \OutOfBoundsException If the tokenGlobalProvider does not exist and not in silent mode.
      *
      * @return TokenCollection
      */
     public function remove(string $tokenName, bool $silent = false): self
     {
         if (!$silent && !\array_key_exists($tokenName, $this->tokens)) {
-            throw new \OutOfBoundsException(sprintf('The token "%s" doesn\'t exists.', $tokenName));
+            throw new \OutOfBoundsException(sprintf('The tokenGlobalProvider "%s" doesn\'t exists.', $tokenName));
         }
 
         unset($this->tokens[$tokenName]);
@@ -96,10 +96,10 @@ class TokenCollection implements \IteratorAggregate
     }
 
     /**
-     * Get the value of a token.
+     * Get the value of a tokenGlobalProvider.
      *
-     * @param string      $tokenName the name of the token to get the value from
-     * @param string|null $default   the default value to return if no such token exist
+     * @param string      $tokenName the name of the tokenGlobalProvider to get the value from
+     * @param string|null $default   the default value to return if no such tokenGlobalProvider exist
      */
     public function getTokenValue(string $tokenName, ?string $default = null): ?string
     {

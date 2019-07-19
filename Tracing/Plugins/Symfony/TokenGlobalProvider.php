@@ -7,7 +7,7 @@ use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class HttpKernel
+class TokenGlobalProvider
 {
     /** @var TokenCollection */
     private $tokenCollection;
@@ -18,9 +18,17 @@ class HttpKernel
     }
 
     /**
-     * Adds the "global" token to the TokenCollection.
+     * Initializes the "global" tokenGlobalProvider with a random value.
+     */
+    public function init(): void
+    {
+        $this->tokenCollection->add('global', null, true);
+    }
+
+    /**
+     * Adds the "global" tokenGlobalProvider to the TokenCollection.
      *
-     * If the "global" token is not found in the incoming request HTTP headers,
+     * If the "global" tokenGlobalProvider is not found in the incoming request HTTP headers,
      * it will be initialized, otherwise its value is preserved.
      */
     public function setFromRequest(Request $request): void
@@ -48,7 +56,7 @@ class HttpKernel
     }
 
     /**
-     * Clears the global token.
+     * Clears the global tokenGlobalProvider.
      */
     public function clear(): void
     {

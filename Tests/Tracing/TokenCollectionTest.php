@@ -27,9 +27,9 @@ final class TokenCollectionTest extends TestCase
         $this->tokenCollection->add('my_fake_name');
 
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('The token "my_fake_name" already exists.');
+        $this->expectExceptionMessage('The tokenGlobalProvider "my_fake_name" already exists.');
 
-        // this token name already added
+        // this tokenGlobalProvider name already added
         $this->tokenCollection->add('my_fake_name');
     }
 
@@ -85,7 +85,7 @@ final class TokenCollectionTest extends TestCase
     public function remove_will_throw_invalid_argument_exception(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('The token "my_fake_name" doesn\'t exists.');
+        $this->expectExceptionMessage('The tokenGlobalProvider "my_fake_name" doesn\'t exists.');
 
         $this->tokenCollection->remove('my_fake_name');
     }
@@ -117,7 +117,7 @@ final class TokenCollectionTest extends TestCase
     public function replace_will_throw_out_of_bounds_exception(): void
     {
         $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('The token "my_fake_name" doesn\'t exists.');
+        $this->expectExceptionMessage('The tokenGlobalProvider "my_fake_name" doesn\'t exists.');
 
         $this->tokenCollection->replace('my_fake_name');
     }

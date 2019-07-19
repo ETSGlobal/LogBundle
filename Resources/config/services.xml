@@ -91,7 +91,7 @@
         </service>
 
         <service id="etsglobal_log.monolog.handler.slack" class="%etsglobal_log.monolog.handler.slack.class%" public="false">
-            <argument type="string">%etsglobal_log.handlers.slack.token%</argument>
+            <argument type="string">%etsglobal_log.handlers.slack.tokenGlobalProvider%</argument>
             <argument type="string">%etsglobal_log.handlers.slack.channel%</argument>
             <argument type="string">[%kernel.environment%] %etsglobal_log.app_name%</argument>
             <argument type="string">true</argument>

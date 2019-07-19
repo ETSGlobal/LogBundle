@@ -7,7 +7,7 @@ use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * Guzzle middleware to forward the "global" token through HTTP calls.
+ * Guzzle middleware to forward the "global" tokenGlobalProvider through HTTP calls.
  *
  * @internal
  */
@@ -22,7 +22,7 @@ final class TokenGlobalMiddleware
     }
 
     /**
-     * Sets the "global" token in the "x-token-global" request header.
+     * Sets the "global" tokenGlobalProvider in the "x-tokenGlobalProvider-global" request header.
      */
     public function __invoke(callable $handler): callable
     {
@@ -30,7 +30,7 @@ final class TokenGlobalMiddleware
             $tokenGlobal = $this->tokenCollection->getTokenValue('global');
 
             if ($tokenGlobal !== null) {
-                $request = $request->withHeader('x-token-global', $tokenGlobal);
+                $request = $request->withHeader('x-tokenGlobalProvider-global', $tokenGlobal);
             }
 
             return $handler($request, $options);

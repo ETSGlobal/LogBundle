@@ -5,7 +5,7 @@ namespace Tests\ETSGlobal\LogBundle\EventSubscriber;
 
 use ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber;
 use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\Console;
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernel;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\TokenGlobalProvider;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -24,20 +24,13 @@ final class TracingEventSubscriberTest extends TestCase
     /** @var TracingEventSubscriber */
     private $subscriber;
 
-    /** @var Console|ObjectProphecy<Console> */
-    private $consoleMock;
-
-    /** @var HttpKernel|ObjectProphecy<HttpKernel> */
-    private $httpKernelMock;
+    /** @var TokenGlobalProvider|ObjectProphecy<TokenGlobalProvider> */
+    private $tokenGlobalProvider;
 
     protected function setUp(): void
     {
-        $this->consoleMock = $this->prophesize(Console::class);
-        $this->httpKernelMock = $this->prophesize(HttpKernel::class);
-        $this->subscriber = new TracingEventSubscriber(
-            $this->consoleMock->reveal(),
-            $this->httpKernelMock->reveal()
-        );
+        $this->tokenGlobalProvider = $this->prophesize(TokenGlobalProvider::class);
+        $this->subscriber = new TracingEventSubscriber($this->tokenGlobalProvider->reveal());
     }
 
     /**
@@ -53,7 +46,7 @@ final class TracingEventSubscriberTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->httpKernelMock
+        $this->tokenGlobalProvider
             ->setToResponse($response)
             ->shouldBeCalled()
         ;
@@ -64,13 +57,13 @@ final class TracingEventSubscriberTest extends TestCase
     /**
      * @test
      */
-    public function it_creates_token_on_console_command(): void
+    public function it_initializes_token_on_console_command(): void
     {
         /** @var ConsoleCommandEvent|ObjectProphecy<ConsoleCommandEvent> $event */
         $event = $this->prophesize(ConsoleCommandEvent::class);
 
-        $this->consoleMock
-            ->create()
+        $this->tokenGlobalProvider
+            ->init()
             ->shouldBeCalled()
         ;
 
@@ -85,7 +78,7 @@ final class TracingEventSubscriberTest extends TestCase
         /** @var ObjectProphecy<PostResponseEvent>|PostResponseEvent $event */
         $event = $this->prophesize(PostResponseEvent::class);
 
-        $this->httpKernelMock
+        $this->tokenGlobalProvider
             ->clear()
             ->shouldBeCalled()
         ;
@@ -101,7 +94,7 @@ final class TracingEventSubscriberTest extends TestCase
         /** @var ConsoleTerminateEvent|ObjectProphecy<ConsoleTerminateEvent> $event */
         $event = $this->prophesize(ConsoleTerminateEvent::class);
 
-        $this->consoleMock
+        $this->tokenGlobalProvider
             ->clear()
             ->shouldBeCalled()
         ;
@@ -122,7 +115,7 @@ final class TracingEventSubscriberTest extends TestCase
             ->willReturn($request)
         ;
 
-        $this->httpKernelMock
+        $this->tokenGlobalProvider
             ->setFromRequest($request)
             ->shouldBeCalled()
         ;
