@@ -6,6 +6,8 @@
 
     <parameters>
         <parameter key="etsglobal_log.tracing.token_collection.class">ETSGlobal\LogBundle\Tracing\TokenCollection</parameter>
+        <parameter key="etsglobal_log.tracing.plugins.symfony.http_kernel_token.class">ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernelToken</parameter>
+        <parameter key="etsglobal_log.tracing.plugins.symfony.console_token.class">ETSGlobal\LogBundle\Tracing\Plugins\Symfony\ConsoleToken</parameter>
         <parameter key="etsglobal_log.event_subscriber.token.class">ETSGlobal\LogBundle\EventSubscriber\TokenEventSubscriber</parameter>
         <parameter key="etsglobal_log.monolog.processor.token_collection.class">ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor</parameter>
         <parameter key="etsglobal_log.monolog.processor.extra_field.class">ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor</parameter>
@@ -26,8 +28,17 @@
             </call>
         </service>
 
-        <service id="etsglobal_log.event_subscriber.token" class="%etsglobal_log.event_subscriber.token.class%">
+        <service id="etsglobal_log.tracing.plugins.symfony.http_kernel_token" class="%etsglobal_log.tracing.plugins.symfony.http_kernel_token.class%">
             <argument type="service" id="etsglobal_log.tracing.token_collection"/>
+        </service>
+
+        <service id="etsglobal_log.tracing.plugins.symfony.console_token" class="%etsglobal_log.tracing.plugins.symfony.console_token.class%">
+            <argument type="service" id="etsglobal_log.tracing.token_collection"/>
+        </service>
+
+        <service id="etsglobal_log.event_subscriber.token" class="%etsglobal_log.event_subscriber.token.class%">
+            <argument type="service" id="etsglobal_log.tracing.plugins.symfony.console_token"/>
+            <argument type="service" id="etsglobal_log.tracing.plugins.symfony.http_kernel_token"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>

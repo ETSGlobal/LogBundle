@@ -12,9 +12,9 @@ use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
  * @internal
@@ -46,8 +46,8 @@ final class TokenEventSubscriberTest extends TestCase
     public function it_sets_response_headers_on_kernel_response(): void
     {
         $response = new Response();
-        /** @var ResponseEvent|ObjectProphecy<ResponseEvent> $event */
-        $event = $this->prophesize(ResponseEvent::class);
+        /** @var FilterResponseEvent|ObjectProphecy<FilterResponseEvent> $event */
+        $event = $this->prophesize(FilterResponseEvent::class);
         $event
             ->getResponse()
             ->willReturn($response)
