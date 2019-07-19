@@ -6,10 +6,8 @@ namespace Tests\ETSGlobal\LogBundle\Tracing\Plugins\Symfony;
 use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernelToken;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
  * @internal

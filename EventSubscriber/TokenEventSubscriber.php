@@ -84,17 +84,13 @@ final class TokenEventSubscriber implements EventSubscriberInterface
         $this->httpKernelToken->clear();
     }
 
-    /**
-     * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-     */
+    // phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onConsoleCommand(ConsoleCommandEvent $event): void
     {
         $this->consoleToken->create();
     }
 
-    /**
-     * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-     */
+    // phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
         $this->consoleToken->clear();

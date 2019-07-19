@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Tests\ETSGlobal\LogBundle\EventSubscriber\TokenEventSubscriber;
+namespace Tests\ETSGlobal\LogBundle\EventSubscriber;
 
 use ETSGlobal\LogBundle\EventSubscriber\TokenEventSubscriber;
 use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\ConsoleToken;
@@ -82,7 +82,7 @@ final class TokenEventSubscriberTest extends TestCase
      */
     public function it_clears_token_on_kernel_terminate(): void
     {
-        /** @var PostResponseEvent|ObjectProphecy<PostResponseEvent> $event */
+        /** @var ObjectProphecy<PostResponseEvent>|PostResponseEvent $event */
         $event = $this->prophesize(PostResponseEvent::class);
 
         $this->httpKernelTokenMock

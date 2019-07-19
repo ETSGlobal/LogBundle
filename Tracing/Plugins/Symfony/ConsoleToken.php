@@ -5,9 +5,6 @@ namespace ETSGlobal\LogBundle\Tracing\Plugins\Symfony;
 
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 
-/**
- * @internal
- */
 class ConsoleToken
 {
     /** @var TokenCollection */
