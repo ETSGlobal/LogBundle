@@ -50,7 +50,7 @@ final class TokenEventSubscriber implements EventSubscriberInterface
      */
     public function createGlobalToken(GetResponseEvent $event): void
     {
-        $header = $event->getRequest()->headers->get('X-Token-Global');
+        $header = $event->getRequest()->headers->get('x-token-global');
         if (\is_array($header)) {
             $header = implode('', $header);
         }
@@ -82,7 +82,7 @@ final class TokenEventSubscriber implements EventSubscriberInterface
         $response = $event->getResponse();
 
         foreach ($this->tokenCollection->getTokens() as $token) {
-            $response->headers->set(sprintf('X-Token-%s', ucfirst($token->getName())), $token->getValue());
+            $response->headers->set(sprintf('x-token-%s', strtolower($token->getName())), $token->getValue());
         }
     }
 
