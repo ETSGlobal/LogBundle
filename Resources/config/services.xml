@@ -1,0 +1,96 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="etsglobal_log.tracing.token_collection.class">ETSGlobal\LogBundle\Tracing\TokenCollection</parameter>
+        <parameter key="etsglobal_log.event_subscriber.token.class">ETSGlobal\LogBundle\EventSubscriber\TokenEventSubscriber</parameter>
+        <parameter key="etsglobal_log.monolog.processor.token_collection.class">ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor</parameter>
+        <parameter key="etsglobal_log.monolog.processor.extra_field.class">ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor</parameter>
+        <parameter key="etsglobal_log.monolog.formatter.token_collection.class">ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter</parameter>
+        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.class_line.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\ClassLineModifier</parameter>
+        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.jira.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\JiraModifier</parameter>
+        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.token_collection.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\TokenCollectionModifier</parameter>
+        <parameter key="etsglobal_log.monolog.handler.exclusion_strategy.status_codes_http_exception.class">ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy</parameter>
+        <parameter key="etsglobal_log.monolog.handler.slack.class">ETSGlobal\LogBundle\Monolog\Handler\SlackHandler</parameter>
+    </parameters>
+
+    <services>
+        <service id="etsglobal_log.tracing.token_collection" class="%etsglobal_log.tracing.token_collection.class%" public="true">
+            <call method="add">
+                <argument type="collection">
+                    <argument>process</argument>
+                </argument>
+            </call>
+        </service>
+
+        <service id="etsglobal_log.event_subscriber.token" class="%etsglobal_log.event_subscriber.token.class%">
+            <argument type="service" id="etsglobal_log.tracing.token_collection"/>
+
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="etsglobal_log.monolog.processor.token_collection" class="%etsglobal_log.monolog.processor.token_collection.class%" public="false">
+            <argument type="service" id="etsglobal_log.tracing.token_collection" />
+
+            <tag name="monolog.processor" />
+        </service>
+
+        <service id="etsglobal_log.monolog.processor.extra_field" class="%etsglobal_log.monolog.processor.extra_field.class%" public="false">
+            <argument type="string">application</argument>
+            <argument type="string">%etsglobal_log.app_name%</argument>
+
+            <tag name="monolog.processor" />
+        </service>
+
+        <service id="etsglobal_log.monolog.formatter.token_collection" class="%etsglobal_log.monolog.formatter.token_collection.class%" public="false">
+            <argument type="service" id="etsglobal_log.tracing.token_collection" />
+            <argument type="string">%etsglobal_log.log_format%</argument>
+        </service>
+
+        <service id="etsglobal_log.monolog.handler.content_data_modifier.class_line" class="%etsglobal_log.monolog.handler.content_data_modifier.class_line.class%" public="false"/>
+
+        <service id="etsglobal_log.monolog.handler.content_data_modifier.jira" class="%etsglobal_log.monolog.handler.content_data_modifier.jira.class%" public="false">
+            <argument type="string">jira.com</argument>
+        </service>
+
+        <service id="etsglobal_log.monolog.handler.content_data_modifier.token_collection" class="%etsglobal_log.monolog.handler.content_data_modifier.token_collection.class%" public="false">
+            <argument type="string">kibana.com</argument>
+            <argument type="service" id="etsglobal_log.tracing.token_collection" />
+        </service>
+
+        <service id="etsglobal_log.monolog.handler.exclusion_strategy.status_codes_http_exception" class="%etsglobal_log.monolog.handler.exclusion_strategy.status_codes_http_exception.class%" public="true">
+            <argument type="collection">
+                <argument>400</argument>
+                <argument>401</argument>
+                <argument>403</argument>
+                <argument>404</argument>
+                <argument>405</argument>
+                <argument>409</argument>
+            </argument>
+        </service>
+
+        <service id="etsglobal_log.monolog.handler.slack" class="%etsglobal_log.monolog.handler.slack.class%" public="false">
+            <argument type="string">%etsglobal_log.handlers.slack.token%</argument>
+            <argument type="string">%etsglobal_log.handlers.slack.channel%</argument>
+            <argument type="string">[%kernel.environment%] %etsglobal_log.app_name%</argument>
+            <argument type="string">true</argument>
+            <argument type="string">%etsglobal_log.handlers.slack.icon_emoji%</argument>
+            <argument type="string">%etsglobal_log.handlers.slack.log_level%</argument>
+            <call method="addExclusionStrategy">
+                <argument type="service" id="etsglobal_log.monolog.handler.exclusion_strategy.status_codes_http_exception"/>
+            </call>
+            <call method="addContentDataModifier">
+                <argument type="service" id="etsglobal_log.monolog.handler.content_data_modifier.class_line"/>
+            </call>
+            <call method="addContentDataModifier">
+                <argument type="service" id="etsglobal_log.monolog.handler.content_data_modifier.jira"/>
+            </call>
+            <call method="addContentDataModifier">
+                <argument type="service" id="etsglobal_log.monolog.handler.content_data_modifier.token_collection"/>
+            </call>
+        </service>
+    </services>
+</container>

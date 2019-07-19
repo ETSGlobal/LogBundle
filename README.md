@@ -1,6 +1,17 @@
 LogBundle
 =========
 
+Provides normalized logging and tracing features for all ETSGlobal Symfony applications.
+
+## Overview
+
+Main features:
+
+- Provide `TokenCollection` utility to enable downstream applications for request tracing from app to app.
+- Automatically configure `global` and `process` token tracing for incoming HTTP requests/responses as well as long-running processes.
+- Automatically enrich log context with the application name and tracing tokens. 
+- Slack handler: An extended version of Monolog's slack handler, with custom message contents, and custom filters.
+
 ## Installation
 
 1. Install the bundle
@@ -34,3 +45,11 @@ $bundles = [
 
 ## Configuration
 
+```yaml
+etglobal_log:
+    app_name: my-app # Used to filter logs by application.
+    slack_handler:
+        token: "slack api token"
+        channel: "#channel-name"
+
+```
