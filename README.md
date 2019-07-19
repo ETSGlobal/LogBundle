@@ -1,6 +1,8 @@
 LogBundle
 =========
 
+[![Build Status](https://travis-ci.org/ETSGlobal/LogBundle.svg?branch=master)](https://travis-ci.org/ETSGlobal/LogBundle)
+
 Provides normalized logging and tracing features for all ETSGlobal Symfony applications.
 
 ## Overview
