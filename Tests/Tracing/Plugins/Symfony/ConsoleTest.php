@@ -3,25 +3,25 @@ declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\Tracing\Plugins\Symfony;
 
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\ConsoleToken;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\Console;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-final class ConsoleTokenTest extends TestCase
+final class ConsoleTest extends TestCase
 {
     /** @var TokenCollection */
     private $tokenCollection;
 
-    /** @var ConsoleToken */
-    private $consoleToken;
+    /** @var Console */
+    private $console;
 
     protected function setUp(): void
     {
         $this->tokenCollection = new TokenCollection();
-        $this->consoleToken = new ConsoleToken($this->tokenCollection);
+        $this->console = new Console($this->tokenCollection);
     }
 
     /**
@@ -29,7 +29,7 @@ final class ConsoleTokenTest extends TestCase
      */
     public function it_creates_global_token(): void
     {
-        $this->consoleToken->create();
+        $this->console->create();
 
         $globalTokenValue = $this->tokenCollection->getTokenValue('global');
         $this->assertNotNull($globalTokenValue);
@@ -43,7 +43,7 @@ final class ConsoleTokenTest extends TestCase
     {
         $this->tokenCollection->add('global');
 
-        $this->consoleToken->clear();
+        $this->console->clear();
 
         $this->assertNull($this->tokenCollection->getTokenValue('global'));
     }

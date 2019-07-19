@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\Tracing\Plugins\Symfony;
 
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernelToken;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernel;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,18 +12,18 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @internal
  */
-final class HttpKernelTokenTest extends TestCase
+final class HttpKernelTest extends TestCase
 {
     /** @var TokenCollection */
     private $tokenCollection;
 
-    /** @var HttpKernelToken */
-    private $httpKernelToken;
+    /** @var HttpKernel */
+    private $httpKernel;
 
     protected function setUp(): void
     {
         $this->tokenCollection = new TokenCollection();
-        $this->httpKernelToken = new HttpKernelToken($this->tokenCollection);
+        $this->httpKernel = new HttpKernel($this->tokenCollection);
     }
 
     /**
@@ -31,7 +31,7 @@ final class HttpKernelTokenTest extends TestCase
      */
     public function it_creates_token(): void
     {
-        $this->httpKernelToken->setFromRequest(new Request());
+        $this->httpKernel->setFromRequest(new Request());
 
         $globalTokenValue = $this->tokenCollection->getTokenValue('global');
         $this->assertNotNull($globalTokenValue);
@@ -46,7 +46,7 @@ final class HttpKernelTokenTest extends TestCase
         $request = new Request();
         $request->headers->set('X-Token-Global', 'some_token');
 
-        $this->httpKernelToken->setFromRequest($request);
+        $this->httpKernel->setFromRequest($request);
 
         $globalTokenValue = $this->tokenCollection->getTokenValue('global');
         $this->assertNotNull($globalTokenValue);
@@ -63,7 +63,7 @@ final class HttpKernelTokenTest extends TestCase
         $this->tokenCollection->add('global', 'foo');
         $this->tokenCollection->add('process', 'bar');
 
-        $this->httpKernelToken->setToResponse($response);
+        $this->httpKernel->setToResponse($response);
 
         $headers = $response->headers->all();
         $this->assertArrayHasKey('x-token-global', $headers);
@@ -79,7 +79,7 @@ final class HttpKernelTokenTest extends TestCase
     {
         $this->tokenCollection->add('global');
 
-        $this->httpKernelToken->clear();
+        $this->httpKernel->clear();
 
         $this->assertNull($this->tokenCollection->getTokenValue('global'));
     }

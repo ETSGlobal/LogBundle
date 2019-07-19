@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\EventSubscriber;
 
-use ETSGlobal\LogBundle\EventSubscriber\TokenEventSubscriber;
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\ConsoleToken;
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernelToken;
+use ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\Console;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernel;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -19,24 +19,24 @@ use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 /**
  * @internal
  */
-final class TokenEventSubscriberTest extends TestCase
+final class TracingEventSubscriberTest extends TestCase
 {
-    /** @var TokenEventSubscriber */
+    /** @var TracingEventSubscriber */
     private $subscriber;
 
-    /** @var ConsoleToken|ObjectProphecy<ConsoleToken> */
-    private $consoleTokenMock;
+    /** @var Console|ObjectProphecy<Console> */
+    private $consoleMock;
 
-    /** @var HttpKernelToken|ObjectProphecy<HttpKernelToken> */
-    private $httpKernelTokenMock;
+    /** @var HttpKernel|ObjectProphecy<HttpKernel> */
+    private $httpKernelMock;
 
     protected function setUp(): void
     {
-        $this->consoleTokenMock = $this->prophesize(ConsoleToken::class);
-        $this->httpKernelTokenMock = $this->prophesize(HttpKernelToken::class);
-        $this->subscriber = new TokenEventSubscriber(
-            $this->consoleTokenMock->reveal(),
-            $this->httpKernelTokenMock->reveal()
+        $this->consoleMock = $this->prophesize(Console::class);
+        $this->httpKernelMock = $this->prophesize(HttpKernel::class);
+        $this->subscriber = new TracingEventSubscriber(
+            $this->consoleMock->reveal(),
+            $this->httpKernelMock->reveal()
         );
     }
 
@@ -53,7 +53,7 @@ final class TokenEventSubscriberTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->httpKernelTokenMock
+        $this->httpKernelMock
             ->setToResponse($response)
             ->shouldBeCalled()
         ;
@@ -69,7 +69,7 @@ final class TokenEventSubscriberTest extends TestCase
         /** @var ConsoleCommandEvent|ObjectProphecy<ConsoleCommandEvent> $event */
         $event = $this->prophesize(ConsoleCommandEvent::class);
 
-        $this->consoleTokenMock
+        $this->consoleMock
             ->create()
             ->shouldBeCalled()
         ;
@@ -85,7 +85,7 @@ final class TokenEventSubscriberTest extends TestCase
         /** @var ObjectProphecy<PostResponseEvent>|PostResponseEvent $event */
         $event = $this->prophesize(PostResponseEvent::class);
 
-        $this->httpKernelTokenMock
+        $this->httpKernelMock
             ->clear()
             ->shouldBeCalled()
         ;
@@ -101,7 +101,7 @@ final class TokenEventSubscriberTest extends TestCase
         /** @var ConsoleTerminateEvent|ObjectProphecy<ConsoleTerminateEvent> $event */
         $event = $this->prophesize(ConsoleTerminateEvent::class);
 
-        $this->consoleTokenMock
+        $this->consoleMock
             ->clear()
             ->shouldBeCalled()
         ;
@@ -122,7 +122,7 @@ final class TokenEventSubscriberTest extends TestCase
             ->willReturn($request)
         ;
 
-        $this->httpKernelTokenMock
+        $this->httpKernelMock
             ->setFromRequest($request)
             ->shouldBeCalled()
         ;

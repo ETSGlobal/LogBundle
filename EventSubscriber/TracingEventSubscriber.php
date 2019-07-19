@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\EventSubscriber;
 
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\ConsoleToken;
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernelToken;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\Console;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernel;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -20,21 +20,21 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * @internal
  */
-final class TokenEventSubscriber implements EventSubscriberInterface
+final class TracingEventSubscriber implements EventSubscriberInterface
 {
     private const HIGHEST_PRIORITY = 255;
     private const LOWEST_PRIORITY = -255;
 
-    /** @var ConsoleToken */
-    private $consoleToken;
+    /** @var Console */
+    private $console;
 
-    /** @var HttpKernelToken */
-    private $httpKernelToken;
+    /** @var HttpKernel */
+    private $httpKernel;
 
-    public function __construct(ConsoleToken $consoleToken, HttpKernelToken $httpKernelToken)
+    public function __construct(Console $console, HttpKernel $httpKernel)
     {
-        $this->consoleToken = $consoleToken;
-        $this->httpKernelToken = $httpKernelToken;
+        $this->console = $console;
+        $this->httpKernel = $httpKernel;
     }
 
     public static function getSubscribedEvents(): array
@@ -63,7 +63,7 @@ final class TokenEventSubscriber implements EventSubscriberInterface
      */
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        $this->httpKernelToken->setFromRequest($event->getRequest());
+        $this->httpKernel->setFromRequest($event->getRequest());
     }
 
     /**
@@ -71,7 +71,7 @@ final class TokenEventSubscriber implements EventSubscriberInterface
      */
     public function onKernelResponse(FilterResponseEvent $event): void
     {
-        $this->httpKernelToken->setToResponse($event->getResponse());
+        $this->httpKernel->setToResponse($event->getResponse());
     }
 
     /**
@@ -81,18 +81,18 @@ final class TokenEventSubscriber implements EventSubscriberInterface
      */
     public function onKernelTerminate(PostResponseEvent $event): void
     {
-        $this->httpKernelToken->clear();
+        $this->httpKernel->clear();
     }
 
     // phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onConsoleCommand(ConsoleCommandEvent $event): void
     {
-        $this->consoleToken->create();
+        $this->console->create();
     }
 
     // phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
     public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
-        $this->consoleToken->clear();
+        $this->console->clear();
     }
 }

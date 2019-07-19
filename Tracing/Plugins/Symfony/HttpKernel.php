@@ -7,7 +7,7 @@ use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class HttpKernelToken
+class HttpKernel
 {
     /** @var TokenCollection */
     private $tokenCollection;
