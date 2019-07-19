@@ -4,33 +4,46 @@ declare(strict_types=1);
 namespace Tests\ETSGlobal\LogBundle\EventSubscriber\TokenEventSubscriber;
 
 use ETSGlobal\LogBundle\EventSubscriber\TokenEventSubscriber;
-use ETSGlobal\LogBundle\Tracing\TokenCollection;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\ConsoleToken;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernelToken;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
-class TokenEventSubscriberTest extends TestCase
+/**
+ * @internal
+ */
+final class TokenEventSubscriberTest extends TestCase
 {
     /** @var TokenEventSubscriber */
     private $subscriber;
 
-    /** @var TokenCollection */
-    private $tokenCollection;
+    /** @var ConsoleToken|ObjectProphecy<ConsoleToken> */
+    private $consoleTokenMock;
+
+    /** @var HttpKernelToken|ObjectProphecy<HttpKernelToken> */
+    private $httpKernelTokenMock;
 
     protected function setUp(): void
     {
-        $this->tokenCollection = new TokenCollection();
-        $this->subscriber = new TokenEventSubscriber($this->tokenCollection);
+        $this->consoleTokenMock = $this->prophesize(ConsoleToken::class);
+        $this->httpKernelTokenMock = $this->prophesize(HttpKernelToken::class);
+        $this->subscriber = new TokenEventSubscriber(
+            $this->consoleTokenMock->reveal(),
+            $this->httpKernelTokenMock->reveal()
+        );
     }
 
     /**
      * @test
      */
-    public function it_sets_all_tokens_in_response_headers(): void
+    public function it_sets_response_headers_on_kernel_response(): void
     {
         $response = new Response();
         /** @var ResponseEvent|ObjectProphecy<ResponseEvent> $event */
@@ -40,48 +53,66 @@ class TokenEventSubscriberTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->tokenCollection->add('global', 'foo');
-        $this->tokenCollection->add('process', 'bar');
+        $this->httpKernelTokenMock
+            ->setToResponse($response)
+            ->shouldBeCalled()
+        ;
 
-        $this->subscriber->setTokensInResponseHeaders($event->reveal());
-
-        $headers = $response->headers->all();
-        $this->assertArrayHasKey('x-token-global', $headers);
-        $this->assertEquals('foo', $headers['x-token-global'][0]);
-        $this->assertArrayHasKey('x-token-process', $headers);
-        $this->assertEquals('bar', $headers['x-token-process'][0]);
+        $this->subscriber->onKernelResponse($event->reveal());
     }
 
     /**
      * @test
      */
-    public function it_initializes_global_token(): void
+    public function it_creates_token_on_console_command(): void
     {
         /** @var ConsoleCommandEvent|ObjectProphecy<ConsoleCommandEvent> $event */
         $event = $this->prophesize(ConsoleCommandEvent::class);
-        $this->subscriber->initializeGlobalToken($event->reveal());
 
-        $globalTokenValue = $this->tokenCollection->getTokenValue('global');
-        $this->assertNotNull($globalTokenValue);
-        $this->assertIsString($globalTokenValue);
+        $this->consoleTokenMock
+            ->create()
+            ->shouldBeCalled()
+        ;
+
+        $this->subscriber->onConsoleCommand($event->reveal());
     }
 
     /**
      * @test
      */
-    public function it_clears_global_token(): void
+    public function it_clears_token_on_kernel_terminate(): void
     {
-        $this->tokenCollection->add('global');
+        /** @var PostResponseEvent|ObjectProphecy<PostResponseEvent> $event */
+        $event = $this->prophesize(PostResponseEvent::class);
 
-        $this->subscriber->clearGlobalToken(null);
+        $this->httpKernelTokenMock
+            ->clear()
+            ->shouldBeCalled()
+        ;
 
-        $this->assertNull($this->tokenCollection->getTokenValue('global'));
+        $this->subscriber->onKernelTerminate($event->reveal());
     }
 
     /**
      * @test
      */
-    public function it_creates_global_token(): void
+    public function it_clears_token_on_console_terminate(): void
+    {
+        /** @var ConsoleTerminateEvent|ObjectProphecy<ConsoleTerminateEvent> $event */
+        $event = $this->prophesize(ConsoleTerminateEvent::class);
+
+        $this->consoleTokenMock
+            ->clear()
+            ->shouldBeCalled()
+        ;
+
+        $this->subscriber->onConsoleTerminate($event->reveal());
+    }
+
+    /**
+     * @test
+     */
+    public function it_creates_global_token_on_kernel_request(): void
     {
         $request = new Request();
         /** @var GetResponseEvent|ObjectProphecy<GetResponseEvent> $event */
@@ -91,31 +122,11 @@ class TokenEventSubscriberTest extends TestCase
             ->willReturn($request)
         ;
 
-        $this->subscriber->createGlobalToken($event->reveal());
-
-        $globalTokenValue = $this->tokenCollection->getTokenValue('global');
-        $this->assertNotNull($globalTokenValue);
-        $this->assertIsString($globalTokenValue);
-    }
-    /**
-     * @test
-     */
-    public function it_uses_global_token_from_request_headers(): void
-    {
-        $request = new Request();
-        /** @var GetResponseEvent|ObjectProphecy<GetResponseEvent> $event */
-        $event = $this->prophesize(GetResponseEvent::class);
-        $event
-            ->getRequest()
-            ->willReturn($request)
+        $this->httpKernelTokenMock
+            ->setFromRequest($request)
+            ->shouldBeCalled()
         ;
 
-        $request->headers->set('X-Token-Global', 'some_token');
-
-        $this->subscriber->createGlobalToken($event->reveal());
-
-        $globalTokenValue = $this->tokenCollection->getTokenValue('global');
-        $this->assertNotNull($globalTokenValue);
-        $this->assertEquals('some_token', $globalTokenValue);
+        $this->subscriber->onKernelRequest($event->reveal());
     }
 }

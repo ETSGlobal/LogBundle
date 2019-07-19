@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\EventSubscriber;
 
-use ETSGlobal\LogBundle\Tracing\TokenCollection;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\ConsoleToken;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernelToken;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -21,80 +22,81 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class TokenEventSubscriber implements EventSubscriberInterface
 {
-    /** @var TokenCollection */
-    private $tokenCollection;
+    private const HIGHEST_PRIORITY = 255;
+    private const LOWEST_PRIORITY = -255;
 
-    public function __construct(TokenCollection $tokenCollection)
+    /** @var ConsoleToken */
+    private $consoleToken;
+
+    /** @var HttpKernelToken */
+    private $httpKernelToken;
+
+    public function __construct(ConsoleToken $consoleToken, HttpKernelToken $httpKernelToken)
     {
-        $this->tokenCollection = $tokenCollection;
+        $this->consoleToken = $consoleToken;
+        $this->httpKernelToken = $httpKernelToken;
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            [KernelEvents::REQUEST => ['createGlobalTokenFromHeaders', 255]],
-            [ConsoleEvents::COMMAND => ['initializeGlobalToken', 255]],
-            [KernelEvents::RESPONSE => ['setTokensInResponseHeaders', -255]],
-            [KernelEvents::TERMINATE => ['clearGlobalToken', -255]],
-            [ConsoleEvents::TERMINATE => ['clearGlobalToken', -255]],
+            KernelEvents::REQUEST => [
+                ['onKernelRequest', self::HIGHEST_PRIORITY],
+            ],
+            KernelEvents::RESPONSE => [
+                ['onKernelResponse', self::LOWEST_PRIORITY],
+            ],
+            KernelEvents::TERMINATE => [
+                ['onKernelTerminate', self::LOWEST_PRIORITY],
+            ],
+            ConsoleEvents::COMMAND => [
+                ['onConsoleCommand', self::HIGHEST_PRIORITY],
+            ],
+            ConsoleEvents::TERMINATE => [
+                ['onConsoleTerminate', self::LOWEST_PRIORITY],
+            ],
         ];
     }
 
     /**
-     * Adds the "global" token to the TokenCollection.
-     *
-     * If the "global" token is not found in the incoming request HTTP headers,
-     * it will be initialized, otherwise its value is preserved.
-     *
      * @param GetResponseEvent|RequestEvent $event
      */
-    public function createGlobalToken(GetResponseEvent $event): void
+    public function onKernelRequest(GetResponseEvent $event): void
     {
-        $header = $event->getRequest()->headers->get('x-token-global');
-        if (\is_array($header)) {
-            $header = implode('', $header);
-        }
-
-        $this->tokenCollection->add(
-            'global',
-            $header ?? null,
-            true
-        );
+        $this->httpKernelToken->setFromRequest($event->getRequest());
     }
 
     /**
-     * Initializes the "global" token with a random value.
-     *
-     * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-     */
-    public function initializeGlobalToken(ConsoleCommandEvent $event): void
-    {
-        $this->tokenCollection->add('global', null, true);
-    }
-
-    /**
-     * Sets all tokens in the response headers.
-     *
      * @param FilterResponseEvent|ResponseEvent $event
      */
-    public function setTokensInResponseHeaders(FilterResponseEvent $event): void
+    public function onKernelResponse(FilterResponseEvent $event): void
     {
-        $response = $event->getResponse();
-
-        foreach ($this->tokenCollection->getTokens() as $token) {
-            $response->headers->set(sprintf('x-token-%s', strtolower($token->getName())), $token->getValue());
-        }
+        $this->httpKernelToken->setToResponse($event->getResponse());
     }
 
     /**
-     * Clears the global token.
-     *
-     * @param ConsoleTerminateEvent|PostResponseEvent|TerminateEvent $event
+     * @param PostResponseEvent|TerminateEvent $event
      *
      * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function clearGlobalToken($event): void
+    public function onKernelTerminate(PostResponseEvent $event): void
     {
-        $this->tokenCollection->remove('global');
+        $this->httpKernelToken->clear();
+    }
+
+    /**
+     * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+     */
+    public function onConsoleCommand(ConsoleCommandEvent $event): void
+    {
+        $this->consoleToken->create();
+    }
+
+    /**
+     * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+     */
+    public function onConsoleTerminate(ConsoleTerminateEvent $event): void
+    {
+        $this->consoleToken->clear();
     }
 }
