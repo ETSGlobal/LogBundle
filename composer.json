@@ -4,7 +4,7 @@
     "description": "",
     "license": "MIT",
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-json": "*",
         "monolog/monolog": "^1.24 || ^2.0",
         "symfony/config": "^3.4 || ^4.0",
