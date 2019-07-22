@@ -3,24 +3,27 @@ declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
-use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\TokenCollectionModifier;
+use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 
-final class TokenCollectionModifierTest extends TestCase
+/**
+ * @internal
+ */
+final class AddKibanaTokenFilterLinksTest extends TestCase
 {
     /** @var ObjectProphecy<TokenCollection>|TokenCollection */
     private $tokenCollectionMock;
 
-    /** @var TokenCollectionModifier */
-    private $tokenCollectionModifier;
+    /** @var AddKibanaTokenFilterLinks */
+    private $modifier;
 
     protected function setUp(): void
     {
         $this->tokenCollectionMock = $this->prophesize(TokenCollection::class);
 
-        $this->tokenCollectionModifier = new TokenCollectionModifier(
+        $this->modifier = new AddKibanaTokenFilterLinks(
             'my_fake_url tokenName(%s) tokenValue(%s)',
             $this->tokenCollectionMock->reveal()
         );
@@ -35,7 +38,7 @@ final class TokenCollectionModifierTest extends TestCase
         $contentData = [];
         $this->tokenCollectionMock->getTokens()->willReturn($tokens)->shouldBeCalled();
 
-        $this->tokenCollectionModifier->modify($contentData, $record);
+        $this->modifier->modify($contentData, $record);
 
         $this->assertEquals($expectedContentData, $contentData);
     }

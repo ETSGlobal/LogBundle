@@ -12,9 +12,9 @@
         <parameter key="etsglobal_log.monolog.processor.token_collection.class">ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor</parameter>
         <parameter key="etsglobal_log.monolog.processor.extra_field.class">ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor</parameter>
         <parameter key="etsglobal_log.monolog.formatter.token_collection.class">ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter</parameter>
-        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.class_line.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\ClassLineModifier</parameter>
-        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.jira.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\JiraModifier</parameter>
-        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.token_collection.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\TokenCollectionModifier</parameter>
+        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.add_class_line_context.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddClassLineContext</parameter>
+        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.add_jira_link.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddJiraLink</parameter>
+        <parameter key="etsglobal_log.monolog.handler.content_data_modifier.add_kibana_token_filter_links.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks</parameter>
         <parameter key="etsglobal_log.monolog.handler.exclusion_strategy.status_codes_http_exception.class">ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy</parameter>
         <parameter key="etsglobal_log.monolog.handler.slack.class">ETSGlobal\LogBundle\Monolog\Handler\SlackHandler</parameter>
     </parameters>
@@ -63,13 +63,13 @@
             <argument type="string">%etsglobal_log.log_format%</argument>
         </service>
 
-        <service id="etsglobal_log.monolog.handler.content_data_modifier.class_line" class="%etsglobal_log.monolog.handler.content_data_modifier.class_line.class%" public="false"/>
+        <service id="etsglobal_log.monolog.handler.content_data_modifier.add_class_line_context" class="%etsglobal_log.monolog.handler.content_data_modifier.add_class_line_context.class%" public="false"/>
 
-        <service id="etsglobal_log.monolog.handler.content_data_modifier.jira" class="%etsglobal_log.monolog.handler.content_data_modifier.jira.class%" public="false">
+        <service id="etsglobal_log.monolog.handler.content_data_modifier.add_jira_link" class="%etsglobal_log.monolog.handler.content_data_modifier.add_jira_link.class%" public="false">
             <argument type="string">jira.com</argument>
         </service>
 
-        <service id="etsglobal_log.monolog.handler.content_data_modifier.token_collection" class="%etsglobal_log.monolog.handler.content_data_modifier.token_collection.class%" public="false">
+        <service id="etsglobal_log.monolog.handler.content_data_modifier.add_kibana_token_filter_links" class="%etsglobal_log.monolog.handler.content_data_modifier.add_kibana_token_filter_links.class%" public="false">
             <argument type="string">kibana.com</argument>
             <argument type="service" id="etsglobal_log.tracing.token_collection" />
         </service>

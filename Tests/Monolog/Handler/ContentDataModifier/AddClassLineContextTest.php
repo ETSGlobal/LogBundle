@@ -3,20 +3,20 @@ declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
-use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\ClassLineModifier;
+use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddClassLineContext;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-final class ClassLineModifierTest extends TestCase
+final class AddClassLineContextTest extends TestCase
 {
-    /** @var ClassLineModifier */
-    private $classLineModifier;
+    /** @var AddClassLineContext */
+    private $modifier;
 
     protected function setUp(): void
     {
-        $this->classLineModifier = new ClassLineModifier();
+        $this->modifier = new AddClassLineContext();
     }
 
     /**
@@ -27,7 +27,7 @@ final class ClassLineModifierTest extends TestCase
     {
         $contentData = [];
 
-        $this->classLineModifier->modify($contentData, $record);
+        $this->modifier->modify($contentData, $record);
 
         $this->assertEquals($expectedContentData, $contentData);
     }

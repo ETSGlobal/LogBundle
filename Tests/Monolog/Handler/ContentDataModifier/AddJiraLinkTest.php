@@ -3,20 +3,20 @@ declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
-use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\JiraModifier;
+use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddJiraLink;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-final class JiraModifierTest extends TestCase
+final class AddJiraLinkTest extends TestCase
 {
-    /** @var JiraModifier */
-    private $jiraModifier;
+    /** @var AddJiraLink */
+    private $modifier;
 
     protected function setUp(): void
     {
-        $this->jiraModifier = new JiraModifier('my_fake_url %s');
+        $this->modifier = new AddJiraLink('my_fake_url %s');
     }
 
     /**
@@ -27,7 +27,7 @@ final class JiraModifierTest extends TestCase
     {
         $contentData = [];
 
-        $this->jiraModifier->modify($contentData, $record);
+        $this->modifier->modify($contentData, $record);
 
         $this->assertEquals($expectedContentData, $contentData);
     }

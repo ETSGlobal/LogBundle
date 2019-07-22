@@ -5,7 +5,10 @@ namespace ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 
-final class TokenCollectionModifier implements ContentDataModifierInterface
+/**
+ * @internal
+ */
+final class AddKibanaTokenFilterLinks implements ContentDataModifierInterface
 {
     /** @var string */
     private $kibanaUrl;

@@ -9,10 +9,12 @@ Provides normalized logging and tracing features for all ETSGlobal Symfony appli
 
 Main features:
 
+- Automatic logger injection.
 - Provide `TokenCollection` utility to enable downstream applications for request tracing from app to app.
 - Automatically configure `global` and `process` token tracing for incoming HTTP requests/responses as well as long-running processes.
 - Automatically enrich log context with the application name and tracing tokens. 
 - Slack handler: An extended version of Monolog's slack handler, with custom message contents, and custom filters.
+- Provides a Guzzle middleware to forward tokens through HTTP calls.
 
 ## Installation
 
@@ -47,11 +49,95 @@ $bundles = [
 
 ## Configuration
 
+### Bundle configuration
+
 ```yaml
+# config/packages/etsglobal_log.yaml
 etglobal_log:
     app_name: my-app # Used to filter logs by application.
     slack_handler:
         token: "slack API token"
         channel: "#channel-name"
 
+```
+
+### Monolog configuration
+
+If you want to use the slack handler provided by this bundle, add the following configuration:
+
+```yaml
+# config/packages/<env>/monolog.yaml
+monolog:
+    handlers:
+        ...
+        slack_failure:
+            type: 'whatfailuregroup'
+            members: ['slack']
+        slack:
+            type: 'service'
+            id:  'etsglobal_log.monolog.handler.slack'
+            level: "error"
+
+```
+
+If you have a file handler, you might want to use the token_collection formatter to add the tracing tokens:
+
+```yaml
+# config/packages/<env>/monolog.yaml
+monolog:
+    handlers:
+        ...
+        file:
+            type: "rotating_file"
+            path: "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+            formatter: 'etsglobal_log.monolog.formatter.token_collection'
+```
+
+
+### Automatic logger injection
+
+Automatic logger injection will try to inject the logger in all services tagged with the `etsglobal_log.logger_aware` tag.
+The services hate to implement `Psr\Log\LoggerAwareInterface` to receive the logger by setter injection.
+
+```php
+// src/MyService.php
+namespace App;
+
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+
+class MyService implements LoggerAwareInterface
+{
+    use LoggerAwareTrait;
+}
+```
+
+```yaml
+# config/services.yaml
+App\MyService:
+    tags:
+    - { name: "etsglobal_log.logger_aware" }
+```
+
+### Guzzle middleware
+
+Install `csa/guzzle-bundle`:
+
+```bash
+composer require csa/guzzle-bundle
+```
+
+Configure HTTP clients with the "token_global" middleware:
+
+```yaml
+# config/packages/cas_guzzle.yaml
+csa_guzzle:
+     profiler: '%kernel.debug%'
+     logger: true
+     clients:
+         foo:
+             config:
+                 base_uri: "http://example.com/api"
+             middleware: ['token_global']
 ```

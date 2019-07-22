@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
-final class JiraModifier implements ContentDataModifierInterface
+final class AddJiraLink implements ContentDataModifierInterface
 {
     /** @var string */
     private $jiraUrl;

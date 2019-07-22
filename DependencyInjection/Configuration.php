@@ -27,17 +27,17 @@ final class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('etsglobal_log');
         $rootNode
             ->children()
-            ->scalarNode('app_name')->cannotBeEmpty()->isRequired()->end()
-            ->scalarNode('log_format')->cannotBeEmpty()->defaultValue(self::DEFAULT_LOG_FORMAT)->end()
-            ->arrayNode('slack_handler')
-            ->addDefaultsIfNotSet()
-            ->children()
-            ->scalarNode('token')->cannotBeEmpty()->defaultValue('')->end()
-            ->scalarNode('channel')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_CHANNEL)->end()
-            ->scalarNode('icon_emoji')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_ICON_EMOJI)->end()
-            ->scalarNode('log_level')->cannotBeEmpty()->defaultValue(Logger::ERROR)->end()
-            ->end()
-            ->end()
+                ->scalarNode('app_name')->cannotBeEmpty()->isRequired()->end()
+                ->scalarNode('log_format')->cannotBeEmpty()->defaultValue(self::DEFAULT_LOG_FORMAT)->end()
+                ->arrayNode('slack_handler')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('token')->cannotBeEmpty()->defaultValue('')->end()
+                        ->scalarNode('channel')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_CHANNEL)->end()
+                        ->scalarNode('icon_emoji')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_ICON_EMOJI)->end()
+                        ->scalarNode('log_level')->cannotBeEmpty()->defaultValue(Logger::ERROR)->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
