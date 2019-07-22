@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Loader;
 /**
  * @internal
  */
-final class LogBundleExtension extends Extension
+final class LogExtension extends Extension
 {
     /**
      * {@inheritdoc}
