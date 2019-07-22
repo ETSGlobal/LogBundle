@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace Tests\ETSGlobal\LogBundle\EventSubscriber;
 
 use ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber;
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\Console;
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\TokenGlobalProvider;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation;
+use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -24,13 +24,20 @@ final class TracingEventSubscriberTest extends TestCase
     /** @var TracingEventSubscriber */
     private $subscriber;
 
-    /** @var TokenGlobalProvider|ObjectProphecy<TokenGlobalProvider> */
-    private $tokenGlobalProvider;
+    /** @var TokenCollection */
+    private $tokenCollection;
+
+    /** @var HttpFoundation|ObjectProphecy<HttpFoundation> */
+    private $httpFoundation;
 
     protected function setUp(): void
     {
-        $this->tokenGlobalProvider = $this->prophesize(TokenGlobalProvider::class);
-        $this->subscriber = new TracingEventSubscriber($this->tokenGlobalProvider->reveal());
+        $this->tokenCollection = new TokenCollection();
+        $this->httpFoundation = $this->prophesize(HttpFoundation::class);
+        $this->subscriber = new TracingEventSubscriber(
+            $this->tokenCollection,
+            $this->httpFoundation->reveal()
+        );
     }
 
     /**
@@ -46,7 +53,7 @@ final class TracingEventSubscriberTest extends TestCase
             ->willReturn($response)
         ;
 
-        $this->tokenGlobalProvider
+        $this->httpFoundation
             ->setToResponse($response)
             ->shouldBeCalled()
         ;
@@ -62,12 +69,11 @@ final class TracingEventSubscriberTest extends TestCase
         /** @var ConsoleCommandEvent|ObjectProphecy<ConsoleCommandEvent> $event */
         $event = $this->prophesize(ConsoleCommandEvent::class);
 
-        $this->tokenGlobalProvider
-            ->init()
-            ->shouldBeCalled()
-        ;
-
         $this->subscriber->onConsoleCommand($event->reveal());
+
+        $globalTokenValue = $this->tokenCollection->getTokenValue('global');
+        $this->assertNotNull($globalTokenValue);
+        $this->assertIsString($globalTokenValue);
     }
 
     /**
@@ -78,12 +84,11 @@ final class TracingEventSubscriberTest extends TestCase
         /** @var ObjectProphecy<PostResponseEvent>|PostResponseEvent $event */
         $event = $this->prophesize(PostResponseEvent::class);
 
-        $this->tokenGlobalProvider
-            ->clear()
-            ->shouldBeCalled()
-        ;
+        $this->tokenCollection->add('global');
 
         $this->subscriber->onKernelTerminate($event->reveal());
+
+        $this->assertNull($this->tokenCollection->getTokenValue('global'));
     }
 
     /**
@@ -94,12 +99,11 @@ final class TracingEventSubscriberTest extends TestCase
         /** @var ConsoleTerminateEvent|ObjectProphecy<ConsoleTerminateEvent> $event */
         $event = $this->prophesize(ConsoleTerminateEvent::class);
 
-        $this->tokenGlobalProvider
-            ->clear()
-            ->shouldBeCalled()
-        ;
+        $this->tokenCollection->add('global');
 
         $this->subscriber->onConsoleTerminate($event->reveal());
+
+        $this->assertNull($this->tokenCollection->getTokenValue('global'));
     }
 
     /**
@@ -115,7 +119,7 @@ final class TracingEventSubscriberTest extends TestCase
             ->willReturn($request)
         ;
 
-        $this->tokenGlobalProvider
+        $this->httpFoundation
             ->setFromRequest($request)
             ->shouldBeCalled()
         ;

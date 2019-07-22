@@ -6,8 +6,7 @@
 
     <parameters>
         <parameter key="etsglobal_log.tracing.token_collection.class">ETSGlobal\LogBundle\Tracing\TokenCollection</parameter>
-        <parameter key="etsglobal_log.tracing.plugins.symfony.http_kernel.class">ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpKernel</parameter>
-        <parameter key="etsglobal_log.tracing.plugins.symfony.console.class">ETSGlobal\LogBundle\Tracing\Plugins\Symfony\Console</parameter>
+        <parameter key="etsglobal_log.tracing.plugins.symfony.http_foundation.class">ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation</parameter>
         <parameter key="etsglobal_log.tracing.plugins.guzzle.token_global_middleware.class">ETSGlobal\LogBundle\Tracing\Plugins\Guzzle\TokenGlobalMiddleware</parameter>
         <parameter key="etsglobal_log.event_subscriber.tracing.class">ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber</parameter>
         <parameter key="etsglobal_log.monolog.processor.token_collection.class">ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor</parameter>
@@ -29,11 +28,7 @@
             </call>
         </service>
 
-        <service id="etsglobal_log.tracing.plugins.symfony.http_kernel" class="%etsglobal_log.tracing.plugins.symfony.http_kernel.class%">
-            <argument type="service" id="etsglobal_log.tracing.token_collection"/>
-        </service>
-
-        <service id="etsglobal_log.tracing.plugins.symfony.console" class="%etsglobal_log.tracing.plugins.symfony.console.class%">
+        <service id="etsglobal_log.tracing.plugins.symfony.http_foundation" class="%etsglobal_log.tracing.plugins.symfony.http_foundation.class%">
             <argument type="service" id="etsglobal_log.tracing.token_collection"/>
         </service>
 
@@ -44,7 +39,7 @@
         </service>
 
         <service id="etsglobal_log.event_subscriber.tracing" class="%etsglobal_log.event_subscriber.tracing.class%">
-            <argument type="service" id="etsglobal_log.tracing.plugins.symfony.console"/>
+            <argument type="service" id="etsglobal_log.tracing.token_collection"/>
             <argument type="service" id="etsglobal_log.tracing.plugins.symfony.http_kernel"/>
 
             <tag name="kernel.event_subscriber"/>
@@ -91,7 +86,7 @@
         </service>
 
         <service id="etsglobal_log.monolog.handler.slack" class="%etsglobal_log.monolog.handler.slack.class%" public="false">
-            <argument type="string">%etsglobal_log.handlers.slack.tokenGlobalProvider%</argument>
+            <argument type="string">%etsglobal_log.handlers.slack.httpFoundation%</argument>
             <argument type="string">%etsglobal_log.handlers.slack.channel%</argument>
             <argument type="string">[%kernel.environment%] %etsglobal_log.app_name%</argument>
             <argument type="string">true</argument>

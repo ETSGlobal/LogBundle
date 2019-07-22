@@ -32,7 +32,7 @@ final class Configuration implements ConfigurationInterface
             ->arrayNode('slack_handler')
             ->addDefaultsIfNotSet()
             ->children()
-            ->scalarNode('tokenGlobalProvider')->cannotBeEmpty()->defaultValue('')->end()
+            ->scalarNode('token')->cannotBeEmpty()->defaultValue('')->end()
             ->scalarNode('channel')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_CHANNEL)->end()
             ->scalarNode('icon_emoji')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_ICON_EMOJI)->end()
             ->scalarNode('log_level')->cannotBeEmpty()->defaultValue(Logger::ERROR)->end()

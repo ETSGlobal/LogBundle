@@ -24,7 +24,7 @@ final class LogBundleExtension extends Extension
         $container->setParameter('etsglobal_log.app_name', $config['app_name']);
         $container->setParameter('etsglobal_log.log_format', $config['log_format']);
         $container->setParameter('etsglobal_log.handlers.slack.enabled', $config['slack_handler']['enabled']);
-        $container->setParameter('etsglobal_log.handlers.slack.tokenGlobalProvider', $config['slack_handler']['tokenGlobalProvider']);
+        $container->setParameter('etsglobal_log.handlers.slack.token', $config['slack_handler']['token']);
         $container->setParameter('etsglobal_log.handlers.slack.channel', $config['slack_handler']['channel']);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));

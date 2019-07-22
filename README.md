@@ -10,7 +10,7 @@ Provides normalized logging and tracing features for all ETSGlobal Symfony appli
 Main features:
 
 - Provide `TokenCollection` utility to enable downstream applications for request tracing from app to app.
-- Automatically configure `global` and `process` tokenGlobalProvider tracing for incoming HTTP requests/responses as well as long-running processes.
+- Automatically configure `global` and `process` token tracing for incoming HTTP requests/responses as well as long-running processes.
 - Automatically enrich log context with the application name and tracing tokens. 
 - Slack handler: An extended version of Monolog's slack handler, with custom message contents, and custom filters.
 
@@ -51,7 +51,7 @@ $bundles = [
 etglobal_log:
     app_name: my-app # Used to filter logs by application.
     slack_handler:
-        tokenGlobalProvider: tokenGlobaltokenGlobalProviderder
+        token: "slack API token"
         channel: "#channel-name"
 
 ```

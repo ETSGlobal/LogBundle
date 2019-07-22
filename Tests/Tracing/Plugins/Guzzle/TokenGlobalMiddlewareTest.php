@@ -46,7 +46,7 @@ final class TokenGlobalMiddlewareTest extends TestCase
         $this->tokenCollection->add('global', 'token_value');
 
         $this->requestInterfaceMock
-            ->withHeader('x-tokenGlobalProvider-global', 'token_value')
+            ->withHeader('x-token-global', 'token_value')
             ->willReturn($this->requestInterfaceMock->reveal())
             ->shouldBeCalled()
         ;

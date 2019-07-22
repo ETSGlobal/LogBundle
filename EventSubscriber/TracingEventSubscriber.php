@@ -3,7 +3,8 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\EventSubscriber;
 
-use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\TokenGlobalProvider;
+use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation;
+use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -24,12 +25,16 @@ final class TracingEventSubscriber implements EventSubscriberInterface
     private const HIGHEST_PRIORITY = 255;
     private const LOWEST_PRIORITY = -255;
 
-    /** @var TokenGlobalProvider */
-    private $tokenGlobalProvider;
+    /** @var TokenCollection */
+    private $tokenCollection;
 
-    public function __construct(TokenGlobalProvider $tokenGlobalProvider)
+    /** @var HttpFoundation */
+    private $httpFoundation;
+
+    public function __construct(TokenCollection $tokenCollection, HttpFoundation $httpFoundation)
     {
-        $this->tokenGlobalProvider = $tokenGlobalProvider;
+        $this->tokenCollection = $tokenCollection;
+        $this->httpFoundation = $httpFoundation;
     }
 
     public static function getSubscribedEvents(): array
@@ -58,7 +63,7 @@ final class TracingEventSubscriber implements EventSubscriberInterface
      */
     public function onKernelRequest(GetResponseEvent $event): void
     {
-        $this->tokenGlobalProvider->setFromRequest($event->getRequest());
+        $this->httpFoundation->setFromRequest($event->getRequest());
     }
 
     /**
@@ -66,28 +71,38 @@ final class TracingEventSubscriber implements EventSubscriberInterface
      */
     public function onKernelResponse(FilterResponseEvent $event): void
     {
-        $this->tokenGlobalProvider->setToResponse($event->getResponse());
+        $this->httpFoundation->setToResponse($event->getResponse());
     }
 
     /**
+     * Initializes the "global" token with a random value.
+     *
+     * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+     */
+    public function onConsoleCommand(ConsoleCommandEvent $event): void
+    {
+        $this->tokenCollection->add('global', null, true);
+    }
+
+    /**
+     * Clears the global token.
+     *
+     * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
+     */
+    public function onConsoleTerminate(ConsoleTerminateEvent $event): void
+    {
+        $this->tokenCollection->remove('global');
+    }
+
+    /**
+     * Clears the global token.
+     *
      * @param PostResponseEvent|TerminateEvent $event
      *
      * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
     public function onKernelTerminate(PostResponseEvent $event): void
     {
-        $this->tokenGlobalProvider->clear();
-    }
-
-    // phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-    public function onConsoleCommand(ConsoleCommandEvent $event): void
-    {
-        $this->tokenGlobalProvider->init();
-    }
-
-    // phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
-    public function onConsoleTerminate(ConsoleTerminateEvent $event): void
-    {
-        $this->tokenGlobalProvider->clear();
+        $this->tokenCollection->remove('global');
     }
 }
