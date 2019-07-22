@@ -7,7 +7,7 @@ use ETSGlobal\LogBundle\DependencyInjection\CompilerPass\LoggerAwarePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class LogBundle extends Bundle
+class ETSGlobalLogBundle extends Bundle
 {
     public function build(ContainerBuilder $container): void
     {

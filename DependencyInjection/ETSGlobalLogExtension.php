@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Loader;
 /**
  * @internal
  */
-final class LogExtension extends Extension
+final class ETSGlobalLogExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -23,9 +23,10 @@ final class LogExtension extends Extension
 
         $container->setParameter('etsglobal_log.app_name', $config['app_name']);
         $container->setParameter('etsglobal_log.log_format', $config['log_format']);
-        $container->setParameter('etsglobal_log.handlers.slack.enabled', $config['slack_handler']['enabled']);
         $container->setParameter('etsglobal_log.handlers.slack.token', $config['slack_handler']['token']);
         $container->setParameter('etsglobal_log.handlers.slack.channel', $config['slack_handler']['channel']);
+        $container->setParameter('etsglobal_log.handlers.slack.icon_emoji', $config['slack_handler']['icon_emoji']);
+        $container->setParameter('etsglobal_log.handlers.slack.log_level', $config['slack_handler']['log_level']);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');

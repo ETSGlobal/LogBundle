@@ -30,7 +30,7 @@ composer require etsglobal/log-bundle
 // config/Bundles.php
 return [
     ...
-    ETSGlobal\LogBundle\LogBundle::class => ['all' => true],
+    ETSGlobal\LogBundle\ETSGlobalLogBundle::class => ['all' => true],
     ...
 ];
 ```
@@ -42,7 +42,7 @@ For Symfony < 4
 // app/AppKernel.php
 $bundles = [
     ...
-    new ETSGlobal\LogBundle\LogBundle(),
+    new ETSGlobal\LogBundle\ETSGlobalLogBundle(),
     ...
 ];
 ```
