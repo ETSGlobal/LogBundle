@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class LoggerAwarePass implements CompilerPassInterface
 {
-    private const TAG_NAME = 'etsglobal_log.logger_aware';
+    private const TAG_NAME = 'ets_global_log.logger_aware';
 
     public function process(ContainerBuilder $container): void
     {

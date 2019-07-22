@@ -24,7 +24,7 @@ final class LoggerAwarePassTest extends TestCase
 
         $serviceDefinition = new Definition(LoggerAwareInterface::class);
         $serviceDefinition->setPublic(true);
-        $serviceDefinition->addTag('etsglobal_log.logger_aware');
+        $serviceDefinition->addTag('ets_global_log.logger_aware');
 
         $container->setDefinition('logger', $loggerDefinition);
         $container->setDefinition('definition.id', $serviceDefinition);
@@ -41,7 +41,7 @@ final class LoggerAwarePassTest extends TestCase
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage(
-            'The service "definition.id" tagged as "etsglobal_log.logger_aware" must implement "Psr\Log\LoggerAwareInterface"'
+            'The service "definition.id" tagged as "ets_global_log.logger_aware" must implement "Psr\Log\LoggerAwareInterface"'
         );
 
         $container = new ContainerBuilder();
@@ -50,7 +50,7 @@ final class LoggerAwarePassTest extends TestCase
         $loggerDefinition = new Definition(LoggerAwareInterface::class);
         $serviceDefinition = new Definition(\stdClass::class);
         $serviceDefinition->setPublic(true);
-        $serviceDefinition->addTag('etsglobal_log.logger_aware');
+        $serviceDefinition->addTag('ets_global_log.logger_aware');
 
         $container->setDefinition('logger', $loggerDefinition);
         $container->setDefinition('definition.id', $serviceDefinition);
@@ -71,7 +71,7 @@ final class LoggerAwarePassTest extends TestCase
         $loggerDefinition = new Definition(LoggerAwareInterface::class);
         $serviceDefinition = new Definition('notaclass');
         $serviceDefinition->setPublic(true);
-        $serviceDefinition->addTag('etsglobal_log.logger_aware');
+        $serviceDefinition->addTag('ets_global_log.logger_aware');
 
         $container->setDefinition('logger', $loggerDefinition);
         $container->setDefinition('definition.id', $serviceDefinition);

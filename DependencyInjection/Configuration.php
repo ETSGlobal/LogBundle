@@ -24,7 +24,7 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
 
-        $rootNode = $treeBuilder->root('etsglobal_log');
+        $rootNode = $treeBuilder->root('ets_global_log');
         $rootNode
             ->children()
                 ->scalarNode('app_name')->cannotBeEmpty()->isRequired()->end()
@@ -41,6 +41,6 @@ final class Configuration implements ConfigurationInterface
             ->end()
         ;
 
-        return $rootNode;
+        return $treeBuilder;
     }
 }

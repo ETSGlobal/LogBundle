@@ -52,8 +52,8 @@ $bundles = [
 ### Bundle configuration
 
 ```yaml
-# config/packages/etsglobal_log.yaml
-etglobal_log:
+# config/packages/ets_global_log.yaml
+ets_global_log:
     app_name: my-app # Used to filter logs by application.
     slack_handler:
         token: "slack API token"
@@ -75,7 +75,7 @@ monolog:
             members: ['slack']
         slack:
             type: 'service'
-            id:  'etsglobal_log.monolog.handler.slack'
+            id:  'ets_global_log.monolog.handler.slack'
             level: "error"
 
 ```
@@ -91,13 +91,13 @@ monolog:
             type: "rotating_file"
             path: "%kernel.logs_dir%/%kernel.environment%.log"
             level: debug
-            formatter: 'etsglobal_log.monolog.formatter.token_collection'
+            formatter: 'ets_global_log.monolog.formatter.token_collection'
 ```
 
 
 ### Automatic logger injection
 
-Automatic logger injection will try to inject the logger in all services tagged with the `etsglobal_log.logger_aware` tag.
+Automatic logger injection will try to inject the logger in all services tagged with the `ets_global_log.logger_aware` tag.
 The services hate to implement `Psr\Log\LoggerAwareInterface` to receive the logger by setter injection.
 
 ```php
@@ -117,7 +117,7 @@ class MyService implements LoggerAwareInterface
 # config/services.yaml
 App\MyService:
     tags:
-    - { name: "etsglobal_log.logger_aware" }
+    - { name: "ets_global_log.logger_aware" }
 ```
 
 ### Guzzle middleware
