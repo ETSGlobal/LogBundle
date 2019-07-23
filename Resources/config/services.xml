@@ -22,9 +22,7 @@
     <services>
         <service id="ets_global_log.tracing.token_collection" class="%ets_global_log.tracing.token_collection.class%" public="true">
             <call method="add">
-                <argument type="collection">
-                    <argument>process</argument>
-                </argument>
+                <argument type="string">process</argument>
             </call>
         </service>
 
