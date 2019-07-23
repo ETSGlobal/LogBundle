@@ -22,8 +22,8 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 final class TracingEventSubscriber implements EventSubscriberInterface
 {
-    private const HIGHEST_PRIORITY = 255;
-    private const LOWEST_PRIORITY = -255;
+    private const HIGHEST_PRIORITY = 512;
+    private const LOWEST_PRIORITY = -512;
 
     /** @var TokenCollection */
     private $tokenCollection;
