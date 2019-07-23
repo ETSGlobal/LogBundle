@@ -59,7 +59,7 @@ ets_global_log:
         token: "slack API token"
         channel: "#channel-name"
         jira_url: "example.jira.com"
-        kibana_url: "kibana.example.com"
+        kibana_url: "kibana.example.com/app/kibana"
 ```
 
 ### Monolog configuration
