@@ -12,6 +12,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 final class Configuration implements ConfigurationInterface
 {
+    private const DEFAULT_APP_NAME = 'default';
     // phpcs:ignore Generic.Files.LineLength.TooLong
     private const DEFAULT_LOG_FORMAT = "[%%datetime%%][%%token_collection%%] %%channel%%.%%level_name%%: %%message%% %%context%% %%extra%%\n";
     private const DEFAULT_SLACK_CHANNEL = '#random';
@@ -24,7 +25,7 @@ final class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('ets_global_log');
         $rootNode
             ->children()
-                ->scalarNode('app_name')->cannotBeEmpty()->isRequired()->end()
+                ->scalarNode('app_name')->cannotBeEmpty()->defaultValue(self::DEFAULT_APP_NAME)->end()
                 ->scalarNode('log_format')->cannotBeEmpty()->defaultValue(self::DEFAULT_LOG_FORMAT)->end()
                 ->arrayNode('slack_handler')
                     ->addDefaultsIfNotSet()
