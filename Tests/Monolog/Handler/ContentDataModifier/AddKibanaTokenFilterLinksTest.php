@@ -6,26 +6,25 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Prophecy\ObjectProphecy;
 
 /**
  * @internal
  */
 final class AddKibanaTokenFilterLinksTest extends TestCase
 {
-    /** @var ObjectProphecy<TokenCollection>|TokenCollection */
-    private $tokenCollectionMock;
+    /** @var TokenCollection */
+    private $tokenCollection;
 
     /** @var AddKibanaTokenFilterLinks */
     private $modifier;
 
     protected function setUp(): void
     {
-        $this->tokenCollectionMock = $this->prophesize(TokenCollection::class);
+        $this->tokenCollection = new TokenCollection();
 
         $this->modifier = new AddKibanaTokenFilterLinks(
-            'my_fake_url tokenName(%s) tokenValue(%s)',
-            $this->tokenCollectionMock->reveal()
+            'https://kibana.example.com/app/kibana',
+            $this->tokenCollection
         );
     }
 
@@ -36,7 +35,10 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
     public function it_adds_tokens_to_contents(array $record, array $tokens, array $expectedContentData): void
     {
         $contentData = [];
-        $this->tokenCollectionMock->getTokens()->willReturn($tokens)->shouldBeCalled();
+
+        foreach ($tokens as $name => $value) {
+            $this->tokenCollection->add($name, $value);
+        }
 
         $this->modifier->modify($contentData, $record);
 
@@ -45,6 +47,7 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
 
     public function modifyDataProvider(): array
     {
+        // phpcs:disable Generic.Files.LineLength.TooLong
         return [
             [
                 ['message' => 'my_fake_message'],
@@ -59,7 +62,7 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
                     ],
                 ],
                 [
-                    'test' => 'token_value',
+                    'test' => 'extra_token_test_value',
                     'test2' => 'token_value',
                 ],
                 [
@@ -69,7 +72,7 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
                                 [
                                     'text' => 'token_test',
                                     'type' => 'button',
-                                    'url' => 'my_fake_url tokenName(token_test) tokenValue(extra_token_test_value)',
+                                    'url' => 'https://kibana.example.com/app/kibana#/discover?_g=()&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:\'logstash-*\',key:token_test,negate:!f,value:extra_token_test_value),query:(match:(token_test:(query:extra_token_test_value,type:phrase))))),index:\'logstash-*\',interval:auto,query:\'\',sort:!(\'@timestamp\',desc))',
                                 ],
                             ],
                         ],

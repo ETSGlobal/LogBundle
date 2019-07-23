@@ -10,6 +10,9 @@ use ETSGlobal\LogBundle\Tracing\TokenCollection;
  */
 final class AddKibanaTokenFilterLinks implements ContentDataModifierInterface
 {
+    // phpcs:disable Generic.Files.LineLength.TooLong
+    private const KIBANA_URI_PATTERN = '#/discover?_g=()&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:\'logstash-*\',key:%1$s,negate:!f,value:%2$s),query:(match:(%1$s:(query:%2$s,type:phrase))))),index:\'logstash-*\',interval:auto,query:\'\',sort:!(\'@timestamp\',desc))';
+
     /** @var string */
     private $kibanaUrl;
 
@@ -37,7 +40,11 @@ final class AddKibanaTokenFilterLinks implements ContentDataModifierInterface
             $contentData['attachments'][0]['actions'][] = [
                 'text' => $key,
                 'type' => 'button',
-                'url' => sprintf($this->kibanaUrl, $key, urlencode($record['extra'][$key])),
+                'url' => sprintf(
+                    $this->kibanaUrl.self::KIBANA_URI_PATTERN,
+                    $key,
+                    urlencode($record['extra'][$key])
+                ),
             ];
         }
     }

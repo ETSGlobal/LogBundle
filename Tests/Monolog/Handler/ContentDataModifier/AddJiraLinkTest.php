@@ -16,7 +16,7 @@ final class AddJiraLinkTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->modifier = new AddJiraLink('my_fake_url %s');
+        $this->modifier = new AddJiraLink('https://example.jira.com');
     }
 
     /**
@@ -34,6 +34,7 @@ final class AddJiraLinkTest extends TestCase
 
     public function modifyDataProvider(): array
     {
+        // phpcs:disable Generic.Files.LineLength.TooLong
         return [
             [
                 [],
@@ -49,7 +50,7 @@ final class AddJiraLinkTest extends TestCase
                                     'text' => 'Create ticket',
                                     'type' => 'button',
                                     'style' => 'primary',
-                                    'url' => 'my_fake_url my_fake_message',
+                                    'url' => 'https://example.jira.com/secure/CreateIssue.jspa?pid=10631&issueType=1&summary=my_fake_message&description=my_fake_message',
                                 ],
                             ],
                         ],

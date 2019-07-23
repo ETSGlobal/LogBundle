@@ -40,6 +40,7 @@ final class LoggerAwarePassTest extends TestCase
     public function it_does_not_find_logger_aware_service(): void
     {
         $this->expectException(\LogicException::class);
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $this->expectExceptionMessage(
             'The service "definition.id" tagged as "ets_global_log.logger_aware" must implement "Psr\Log\LoggerAwareInterface"'
         );
