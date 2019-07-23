@@ -5,12 +5,18 @@ namespace ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy;
 
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
+/**
+ * @internal
+ */
 final class StatusCodesHttpExceptionExclusionStrategy implements ExclusionStrategyInterface
 {
     /** @var int[] */
     private $excludedStatusCodes;
 
-    public function __construct(int ...$excludedStatusCodes)
+    /**
+     * @param int[] $excludedStatusCodes
+     */
+    public function __construct(array $excludedStatusCodes)
     {
         $this->excludedStatusCodes = $excludedStatusCodes;
     }

@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
+/**
+ * @internal
+ */
 final class AddClassLineContext implements ContentDataModifierInterface
 {
     public function modify(array &$contentData, array $record): void

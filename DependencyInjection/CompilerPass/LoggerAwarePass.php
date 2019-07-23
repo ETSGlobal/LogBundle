@@ -13,6 +13,8 @@ use Symfony\Component\DependencyInjection\Reference;
  *
  * Finds all tagged services and add logger by setter injection
  * on classes that implements Psr\Log\LoggerAwareInterface.
+ *
+ * @internal
  */
 final class LoggerAwarePass implements CompilerPassInterface
 {

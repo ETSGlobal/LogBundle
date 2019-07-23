@@ -66,11 +66,11 @@
         <service id="ets_global_log.monolog.handler.content_data_modifier.add_class_line_context" class="%ets_global_log.monolog.handler.content_data_modifier.add_class_line_context.class%" public="false"/>
 
         <service id="ets_global_log.monolog.handler.content_data_modifier.add_jira_link" class="%ets_global_log.monolog.handler.content_data_modifier.add_jira_link.class%" public="false">
-            <argument type="string">jira.com</argument>
+            <argument type="string">%ets_global_log.handlers.slack.jira_url%</argument>
         </service>
 
         <service id="ets_global_log.monolog.handler.content_data_modifier.add_kibana_token_filter_links" class="%ets_global_log.monolog.handler.content_data_modifier.add_kibana_token_filter_links.class%" public="false">
-            <argument type="string">kibana.com</argument>
+            <argument type="string">%ets_global_log.handlers.slack.kibana_url%</argument>
             <argument type="service" id="ets_global_log.tracing.token_collection" />
         </service>
 
@@ -86,7 +86,7 @@
         </service>
 
         <service id="ets_global_log.monolog.handler.slack" class="%ets_global_log.monolog.handler.slack.class%" public="false">
-            <argument type="string">%ets_global_log.handlers.slack.httpFoundation%</argument>
+            <argument type="string">%ets_global_log.handlers.slack.token%</argument>
             <argument type="string">%ets_global_log.handlers.slack.channel%</argument>
             <argument type="string">[%kernel.environment%] %ets_global_log.app_name%</argument>
             <argument type="string">true</argument>

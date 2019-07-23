@@ -20,10 +20,10 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->statusCodesHttpExceptionExclusionStrategy = new StatusCodesHttpExceptionExclusionStrategy(
+        $this->statusCodesHttpExceptionExclusionStrategy = new StatusCodesHttpExceptionExclusionStrategy([
             400,
-            404
-        );
+            404,
+        ]);
     }
 
     /**

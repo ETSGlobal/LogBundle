@@ -36,6 +36,8 @@ final class Configuration implements ConfigurationInterface
                         ->scalarNode('channel')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_CHANNEL)->end()
                         ->scalarNode('icon_emoji')->cannotBeEmpty()->defaultValue(self::DEFAULT_SLACK_ICON_EMOJI)->end()
                         ->scalarNode('log_level')->cannotBeEmpty()->defaultValue(Logger::ERROR)->end()
+                        ->scalarNode('jira_url')->cannotBeEmpty()->defaultValue('')->end()
+                        ->scalarNode('kibana_url')->cannotBeEmpty()->defaultValue('')->end()
                     ->end()
                 ->end()
             ->end()

@@ -21,12 +21,14 @@ final class ETSGlobalLogExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->setParameter('etsglobal_log.app_name', $config['app_name']);
-        $container->setParameter('etsglobal_log.log_format', $config['log_format']);
-        $container->setParameter('etsglobal_log.handlers.slack.token', $config['slack_handler']['token']);
-        $container->setParameter('etsglobal_log.handlers.slack.channel', $config['slack_handler']['channel']);
-        $container->setParameter('etsglobal_log.handlers.slack.icon_emoji', $config['slack_handler']['icon_emoji']);
-        $container->setParameter('etsglobal_log.handlers.slack.log_level', $config['slack_handler']['log_level']);
+        $container->setParameter('ets_global_log.app_name', $config['app_name']);
+        $container->setParameter('ets_global_log.log_format', $config['log_format']);
+        $container->setParameter('ets_global_log.handlers.slack.token', $config['slack_handler']['token']);
+        $container->setParameter('ets_global_log.handlers.slack.channel', $config['slack_handler']['channel']);
+        $container->setParameter('ets_global_log.handlers.slack.icon_emoji', $config['slack_handler']['icon_emoji']);
+        $container->setParameter('ets_global_log.handlers.slack.log_level', $config['slack_handler']['log_level']);
+        $container->setParameter('ets_global_log.handlers.slack.jira_url', $config['slack_handler']['jira_url']);
+        $container->setParameter('ets_global_log.handlers.slack.kibana_url', $config['slack_handler']['kibana_url']);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');

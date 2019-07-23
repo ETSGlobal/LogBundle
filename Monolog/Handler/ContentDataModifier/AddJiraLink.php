@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
+/**
+ * @internal
+ */
 final class AddJiraLink implements ContentDataModifierInterface
 {
     /** @var string */
