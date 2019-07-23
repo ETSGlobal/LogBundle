@@ -94,13 +94,13 @@
                 <argument type="service" id="ets_global_log.monolog.handler.exclusion_strategy.status_codes_http_exception"/>
             </call>
             <call method="addContentDataModifier">
-                <argument type="service" id="ets_global_log.monolog.handler.content_data_modifier.class_line"/>
+                <argument type="service" id="ets_global_log.monolog.handler.content_data_modifier.add_class_line_context"/>
             </call>
             <call method="addContentDataModifier">
-                <argument type="service" id="ets_global_log.monolog.handler.content_data_modifier.jira"/>
+                <argument type="service" id="ets_global_log.monolog.handler.content_data_modifier.add_jira_link"/>
             </call>
             <call method="addContentDataModifier">
-                <argument type="service" id="ets_global_log.monolog.handler.content_data_modifier.token_collection"/>
+                <argument type="service" id="ets_global_log.monolog.handler.content_data_modifier.add_kibana_token_filter_links"/>
             </call>
         </service>
     </services>
