@@ -17,10 +17,7 @@ final class Configuration implements ConfigurationInterface
     private const DEFAULT_SLACK_CHANNEL = '#random';
     private const DEFAULT_SLACK_ICON_EMOJI = ':warning';
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
 

@@ -40,7 +40,7 @@
 
         <service id="ets_global_log.event_subscriber.tracing" class="%ets_global_log.event_subscriber.tracing.class%">
             <argument type="service" id="ets_global_log.tracing.token_collection"/>
-            <argument type="service" id="ets_global_log.tracing.plugins.symfony.http_kernel"/>
+            <argument type="service" id="ets_global_log.tracing.plugins.symfony.http_foundation"/>
 
             <tag name="kernel.event_subscriber"/>
         </service>
