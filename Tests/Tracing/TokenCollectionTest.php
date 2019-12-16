@@ -82,20 +82,9 @@ final class TokenCollectionTest extends TestCase
     /**
      * @test
      */
-    public function remove_will_throw_invalid_argument_exception(): void
+    public function remove_do_nothing_and_return_current_instance(): void
     {
-        $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('The token "my_fake_name" doesn\'t exists.');
-
         $this->tokenCollection->remove('my_fake_name');
-    }
-
-    /**
-     * @test
-     */
-    public function remove_silently(): void
-    {
-        $this->tokenCollection->remove('my_fake_name', true);
         $this->assertArrayNotHasKey('my_fake_name', $this->tokenCollection->getTokens());
     }
 
@@ -114,12 +103,10 @@ final class TokenCollectionTest extends TestCase
     /**
      * @test
      */
-    public function replace_will_throw_out_of_bounds_exception(): void
+    public function replace_will_add_key_if_not_exists(): void
     {
-        $this->expectException(\OutOfBoundsException::class);
-        $this->expectExceptionMessage('The token "my_fake_name" doesn\'t exists.');
-
         $this->tokenCollection->replace('my_fake_name');
+        $this->assertArrayHasKey('my_fake_name', $this->tokenCollection->getTokens());
     }
 
     /**

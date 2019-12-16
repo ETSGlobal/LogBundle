@@ -70,19 +70,14 @@ class TokenCollection implements \IteratorAggregate
      * Remove a token from the collection.
      *
      * @param string $tokenName the name of the token to remove
-     * @param bool   $silent    whether an exception should be raised if the token does not exist
-     *
-     * @throws \OutOfBoundsException If the token does not exist and not in silent mode.
      *
      * @return TokenCollection
      */
-    public function remove(string $tokenName, bool $silent = false): self
+    public function remove(string $tokenName): self
     {
-        if (!$silent && !\array_key_exists($tokenName, $this->tokens)) {
-            throw new \OutOfBoundsException(sprintf('The token "%s" doesn\'t exists.', $tokenName));
+        if (isset($this->tokens[$tokenName])) {
+            unset($this->tokens[$tokenName]);
         }
-
-        unset($this->tokens[$tokenName]);
 
         return $this;
     }
