@@ -37,7 +37,7 @@ final class TokenCollectionFormatter extends LineFormatter
     /**
      * {@inheritdoc}
      */
-    public function format(array $record)
+    public function format(array $record): string
     {
         $this->format = str_replace('%token_collection%', $this->getFormattedPlaceholder(), $this->originalFormat);
 
