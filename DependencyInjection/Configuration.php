@@ -20,9 +20,15 @@ final class Configuration implements ConfigurationInterface
 
     public function getConfigTreeBuilder(): TreeBuilder
     {
-        $treeBuilder = new TreeBuilder();
+        $treeBuilder = new TreeBuilder('ets_global_log');
 
-        $rootNode = $treeBuilder->root('ets_global_log');
+        // Keep compatibility with symfony/config < 4.2
+        if (\method_exists($treeBuilder, 'getRootNode')) {
+            $rootNode = $treeBuilder->getRootNode();
+        } else {
+            $rootNode = $treeBuilder->root('ets_global_log');
+        }
+
         $rootNode
             ->children()
                 ->scalarNode('app_name')->cannotBeEmpty()->defaultValue(self::DEFAULT_APP_NAME)->end()
