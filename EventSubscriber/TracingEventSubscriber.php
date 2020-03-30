@@ -61,7 +61,7 @@ final class TracingEventSubscriber implements EventSubscriberInterface
     /**
      * @param GetResponseEvent|RequestEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event): void
+    public function onKernelRequest($event): void
     {
         $this->httpFoundation->setFromRequest($event->getRequest());
     }
@@ -69,7 +69,7 @@ final class TracingEventSubscriber implements EventSubscriberInterface
     /**
      * @param FilterResponseEvent|ResponseEvent $event
      */
-    public function onKernelResponse(FilterResponseEvent $event): void
+    public function onKernelResponse($event): void
     {
         $this->httpFoundation->setToResponse($event->getResponse());
     }
@@ -101,7 +101,7 @@ final class TracingEventSubscriber implements EventSubscriberInterface
      *
      * phpcs:disable SlevomatCodingStandard.Functions.UnusedParameter.UnusedParameter
      */
-    public function onKernelTerminate(PostResponseEvent $event): void
+    public function onKernelTerminate($event): void
     {
         $this->tokenCollection->remove('global');
     }
