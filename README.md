@@ -15,6 +15,7 @@ Main features:
 - Automatically enrich log context with the application name and tracing tokens. 
 - Slack handler: An extended version of Monolog's slack handler, with custom message contents, and custom filters.
 - Provides a Guzzle middleware to forward tokens through HTTP calls.
+- Provides a Symfony HttpClient decorator to forward tokens through HTTP calls.
 
 ## Installation
 
@@ -120,6 +121,26 @@ App\MyService:
     tags:
     - { name: "ets_global_log.logger_aware" }
 ```
+
+### Symfony HttpClient decorator
+
+Install `symfony/http-client`:
+
+```bash
+composer require symfony/http-client
+```
+
+Configure your scoped client:
+```yaml
+framework:
+    http_client:
+        scoped_clients:
+            my.client:
+                base_uri: 'example.com/api/'
+```
+
+Just inject the `my.client` HttpClient in your services like normally.
+The `HttpClientDecorator` will decorate the HttpClient to automatically inject the `token_global` in the request.
 
 ### Guzzle middleware
 
