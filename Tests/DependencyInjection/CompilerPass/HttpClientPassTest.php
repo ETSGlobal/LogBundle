@@ -11,6 +11,7 @@ use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class HttpClientPassTest extends TestCase
@@ -44,6 +45,10 @@ class HttpClientPassTest extends TestCase
 
     public function testDecoratesHttpClient(): void
     {
+        if (version_compare(Kernel::VERSION, '4.3.0', '<=')) {
+            $this->markTestSkipped('HttpClient is not supported until Symfony 4.3.0');
+        }
+
         $tokenCollectionDefinition = new Definition(TokenCollection::class);
         $tokenCollectionDefinition->addMethodCall('add', ['process']);
         $this->containerBuilder->setDefinition('ets_global_log.tracing.token_collection', $tokenCollectionDefinition);
