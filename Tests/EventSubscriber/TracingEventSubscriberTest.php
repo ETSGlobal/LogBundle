@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\EventSubscriber;
@@ -12,6 +13,7 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -130,7 +133,7 @@ final class TracingEventSubscriberTest extends TestCase
         $this->subscriber->onKernelRequest($event);
     }
 
-    private function createKernelEvent($eventClass, $fallbackClass = null)
+    private function createKernelEvent(string $eventClass, ?string $fallbackClass = null): KernelEvent
     {
         $eventClassToUse = class_exists($eventClass) ? $eventClass : $fallbackClass;
         if ($eventClassToUse === null) {
@@ -155,7 +158,7 @@ final class TracingEventSubscriberTest extends TestCase
         return new $eventClassToUse($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
     }
 
-    private function createConsoleEvent($eventClass)
+    private function createConsoleEvent(string $eventClass): ConsoleEvent
     {
         $command = new Command('test');
         $input = $this->prophesize(InputInterface::class)->reveal();
