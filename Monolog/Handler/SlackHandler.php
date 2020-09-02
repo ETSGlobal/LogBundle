@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\Monolog\Handler;
@@ -70,7 +71,7 @@ final class SlackHandler extends BaseSlackHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @param array|mixed $record
      */
     protected function prepareContentData($record): array
     {

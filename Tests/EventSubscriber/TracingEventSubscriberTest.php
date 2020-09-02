@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\EventSubscriber;
@@ -7,20 +8,32 @@ use ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber;
 use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleEvent;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\KernelEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * @internal
  */
 final class TracingEventSubscriberTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var TracingEventSubscriber */
     private $subscriber;
 
@@ -45,20 +58,18 @@ final class TracingEventSubscriberTest extends TestCase
      */
     public function it_sets_response_headers_on_kernel_response(): void
     {
+        /** @var FilterResponseEvent|ResponseEvent $event */
+        $event = $this->createKernelEvent(ResponseEvent::class, FilterResponseEvent::class);
+
         $response = new Response();
-        /** @var FilterResponseEvent|ObjectProphecy<FilterResponseEvent> $event */
-        $event = $this->prophesize(FilterResponseEvent::class);
-        $event
-            ->getResponse()
-            ->willReturn($response)
-        ;
+        $event->setResponse($response);
 
         $this->httpFoundation
             ->setToResponse($response)
             ->shouldBeCalled()
         ;
 
-        $this->subscriber->onKernelResponse($event->reveal());
+        $this->subscriber->onKernelResponse($event);
     }
 
     /**
@@ -66,10 +77,10 @@ final class TracingEventSubscriberTest extends TestCase
      */
     public function it_initializes_token_on_console_command(): void
     {
-        /** @var ConsoleCommandEvent|ObjectProphecy<ConsoleCommandEvent> $event */
-        $event = $this->prophesize(ConsoleCommandEvent::class);
+        /** @var ConsoleCommandEvent $event */
+        $event = $this->createConsoleEvent(ConsoleCommandEvent::class);
 
-        $this->subscriber->onConsoleCommand($event->reveal());
+        $this->subscriber->onConsoleCommand($event);
 
         $globalTokenValue = $this->tokenCollection->getTokenValue('global');
         $this->assertNotNull($globalTokenValue);
@@ -81,12 +92,12 @@ final class TracingEventSubscriberTest extends TestCase
      */
     public function it_clears_token_on_kernel_terminate(): void
     {
-        /** @var ObjectProphecy<PostResponseEvent>|PostResponseEvent $event */
-        $event = $this->prophesize(PostResponseEvent::class);
+        /** @var ResponseEvent|PostResponseEvent $event */
+        $event = $this->createKernelEvent(ResponseEvent::class, PostResponseEvent::class);
 
         $this->tokenCollection->add('global');
 
-        $this->subscriber->onKernelTerminate($event->reveal());
+        $this->subscriber->onKernelTerminate($event);
 
         $this->assertNull($this->tokenCollection->getTokenValue('global'));
     }
@@ -96,12 +107,12 @@ final class TracingEventSubscriberTest extends TestCase
      */
     public function it_clears_token_on_console_terminate(): void
     {
-        /** @var ConsoleTerminateEvent|ObjectProphecy<ConsoleTerminateEvent> $event */
-        $event = $this->prophesize(ConsoleTerminateEvent::class);
+        /** @var ConsoleTerminateEvent $event */
+        $event = $this->createConsoleEvent(ConsoleTerminateEvent::class);
 
         $this->tokenCollection->add('global');
 
-        $this->subscriber->onConsoleTerminate($event->reveal());
+        $this->subscriber->onConsoleTerminate($event);
 
         $this->assertNull($this->tokenCollection->getTokenValue('global'));
     }
@@ -111,19 +122,52 @@ final class TracingEventSubscriberTest extends TestCase
      */
     public function it_creates_global_token_on_kernel_request(): void
     {
-        $request = new Request();
-        /** @var GetResponseEvent|ObjectProphecy<GetResponseEvent> $event */
-        $event = $this->prophesize(GetResponseEvent::class);
-        $event
-            ->getRequest()
-            ->willReturn($request)
-        ;
+        /** @var RequestEvent|GetResponseEvent $event */
+        $event = $this->createKernelEvent(RequestEvent::class, GetResponseEvent::class);
 
         $this->httpFoundation
-            ->setFromRequest($request)
+            ->setFromRequest(Argument::type(Request::class))
             ->shouldBeCalled()
         ;
 
-        $this->subscriber->onKernelRequest($event->reveal());
+        $this->subscriber->onKernelRequest($event);
+    }
+
+    private function createKernelEvent(string $eventClass, ?string $fallbackClass = null): KernelEvent
+    {
+        $eventClassToUse = class_exists($eventClass) ? $eventClass : $fallbackClass;
+        if ($eventClassToUse === null) {
+            throw new \RuntimeException(sprintf('Class %s doesn\'t exist.', $eventClass));
+        }
+
+        $kernel = $this->prophesize(HttpKernelInterface::class)->reveal();
+        $request = $this->prophesize(Request::class)->reveal();
+
+        if ($eventClassToUse === ResponseEvent::class) {
+            return new $eventClassToUse($kernel, $request, HttpKernelInterface::MASTER_REQUEST, new Response());
+        }
+
+        if ($eventClassToUse === FilterResponseEvent::class) {
+            return new $eventClassToUse($kernel, $request, HttpKernelInterface::MASTER_REQUEST, new Response());
+        }
+
+        if ($eventClassToUse === PostResponseEvent::class) {
+            return new $eventClassToUse($kernel, $request, new Response());
+        }
+
+        return new $eventClassToUse($kernel, $request, HttpKernelInterface::MASTER_REQUEST);
+    }
+
+    private function createConsoleEvent(string $eventClass): ConsoleEvent
+    {
+        $command = new Command('test');
+        $input = $this->prophesize(InputInterface::class)->reveal();
+        $output = $this->prophesize(OutputInterface::class)->reveal();
+
+        if ($eventClass === ConsoleTerminateEvent::class) {
+            return new $eventClass($command, $input, $output, 0);
+        }
+
+        return new $eventClass($command, $input, $output);
     }
 }

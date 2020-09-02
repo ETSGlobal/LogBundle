@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\Tracing\Plugins\Guzzle;
@@ -6,6 +7,7 @@ namespace Tests\ETSGlobal\LogBundle\Tracing\Plugins\Guzzle;
 use ETSGlobal\LogBundle\Tracing\Plugins\Guzzle\TokenGlobalMiddleware;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\RequestInterface;
 
@@ -14,6 +16,8 @@ use Psr\Http\Message\RequestInterface;
  */
 final class TokenGlobalMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy<RequestInterface>|RequestInterface
      */

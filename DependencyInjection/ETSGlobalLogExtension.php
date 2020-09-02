@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\DependencyInjection;
@@ -14,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader;
 final class ETSGlobalLogExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
     public function load(array $configs, ContainerBuilder $container): void
     {

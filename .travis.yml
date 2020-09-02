@@ -5,22 +5,30 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 7.2
   - 7.3
+  - 7.4
 
-matrix:
+jobs:
   fast_finish: true
+  allow_failures:
+    - php: nightly
   include:
     # Minimum supported dependencies with the latest and oldest PHP version
+    - php: 7.4
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     - php: 7.3
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-    - php: 7.2
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
-      # Test LTS versions. This makes sure we do not use Symfony packages with version greater
-      # than 3. Read more at https://github.com/symfony/lts
-    - php: 7.2
-      env: DEPENDENCIES="symfony/lts:^3"
+    # Test LTS versions. This makes sure we do not use Symfony packages with version greater
+    # than 3. Read more at https://github.com/symfony/lts
+    - php: 7.3
+      env:
+        - DEPENDENCIES="symfony/lts:^3"
+        - STATIC_ANALYSIS=true
+    # Test PHP nightly
+    - php: nightly
+      env:
+        - COMPOSER_FLAGS="--ignore-platform-reqs=php"
 
 before_install:
   - phpenv config-rm xdebug.ini || true
@@ -32,3 +40,8 @@ install:
 script:
   - composer validate --strict --no-check-lock
   - vendor/bin/phpunit
+  - |
+    if [[ $STATIC_ANALYSIS == true ]]; then
+      vendor/bin/phpcs .
+      vendor/bin/phpstan analyze --level max .
+    fi
