@@ -19,12 +19,13 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class HttpClientPass implements CompilerPassInterface
 {
+    private const TOKEN_COLLECTION_SERVICE_ID = 'ets_global_log.tracing.token_collection';
+
     public function process(ContainerBuilder $container): void
     {
         if (!$container->hasDefinition('ets_global_log.tracing.token_collection')) {
             throw new \RuntimeException('The token collection service definition is missing.');
         }
-        $tokenCollectionDefinition = $container->getDefinition('ets_global_log.tracing.token_collection');
 
         $taggedServices = $container->findTaggedServiceIds('http_client.client');
         foreach ($taggedServices as $id => $attributes) {
@@ -33,7 +34,7 @@ class HttpClientPass implements CompilerPassInterface
             $decorator = new Definition(HttpClientDecorator::class);
             $decorator->setDecoratedService($id);
             $decorator->setArgument('$httpClient', $httpClientDefinition);
-            $decorator->setArgument('$tokenCollection', new Reference('ets_global_log.tracing.token_collection'));
+            $decorator->setArgument('$tokenCollection', new Reference(self::TOKEN_COLLECTION_SERVICE_ID));
 
             $container->setDefinition(HttpClientDecorator::class, $decorator);
         }

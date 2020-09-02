@@ -22,8 +22,8 @@ class HttpClientPassTest extends TestCase
     {
         $this->containerBuilder = new ContainerBuilder();
         $this->containerBuilder->addCompilerPass(new HttpClientPass());
-
     }
+
     public function testThrowsExceptionWhenMissingTokenCollectionService(): void
     {
         $this->expectException(\RuntimeException::class);

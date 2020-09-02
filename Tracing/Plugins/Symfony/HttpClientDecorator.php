@@ -33,7 +33,10 @@ class HttpClientDecorator implements HttpClientInterface
         return $this->httpClient->request($method, $url, $options);
     }
 
-    public function stream($responses, float $timeout = null): ResponseStreamInterface
+    /**
+     * {@inheritDoc}
+     */
+    public function stream($responses, ?float $timeout = null): ResponseStreamInterface
     {
         return $this->httpClient->stream($responses, $timeout);
     }
