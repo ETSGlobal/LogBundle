@@ -11,5 +11,5 @@ parameters:
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
-        - message: '/(GetResponseEvent|FilterResponseEvent|PostResponseEvent)/'
+        - message: '/(GetResponseEvent|FilterResponseEvent|PostResponseEvent|ResponseEvent|RequestEvent|TerminateEvent)/'
           path: %currentWorkingDirectory%/EventSubscriber/TracingEventSubscriber.php

@@ -27,8 +27,12 @@ final class LoggerAwarePass implements CompilerPassInterface
 
         foreach (array_keys($taggerServices) as $id) {
             $serviceDefinition = $container->getDefinition($id);
+            $serviceClass = $serviceDefinition->getClass();
+            if ($serviceClass === null) {
+                continue;
+            }
 
-            $reflectionClass = $container->getReflectionClass($serviceDefinition->getClass());
+            $reflectionClass = $container->getReflectionClass($serviceClass);
             if (!$reflectionClass instanceof \ReflectionClass) {
                 continue;
             }
