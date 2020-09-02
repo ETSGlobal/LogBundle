@@ -1,14 +1,15 @@
 includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
     - vendor/phpstan/phpstan-phpunit/rules.neon
-    - vendor/jangregor/phpstan-prophecy/src/extension.neon
+    - vendor/jangregor/phpstan-prophecy/extension.neon
 
 parameters:
     excludes_analyse:
+        - %rootDir%/../../../Tests
         - %rootDir%/../../../vendor
         - %rootDir%/../../../DependencyInjection/Configuration.php
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
-        # Global errors to be ignored
-        - ## Issue with @var SomeObject&ObjectProphecy or ObjectProphecy<SomeObject>
-            message: '/^PHPDoc tag @var for property [a-zA-Z\\]+::\$[a-zA-Z]+ contains unresolvable type\.$/'
-            path: %currentWorkingDirectory%/Tests/*
+        - message: '/(GetResponseEvent|FilterResponseEvent|PostResponseEvent)/'
+          path: %currentWorkingDirectory%/EventSubscriber/TracingEventSubscriber.php

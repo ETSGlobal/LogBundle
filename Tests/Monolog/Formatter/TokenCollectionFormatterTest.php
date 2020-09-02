@@ -7,6 +7,7 @@ use ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter;
 use ETSGlobal\LogBundle\Tracing\Token;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 /**
@@ -14,6 +15,8 @@ use Prophecy\Prophecy\ObjectProphecy;
  */
 final class TokenCollectionFormatterTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy|TokenCollection
      */

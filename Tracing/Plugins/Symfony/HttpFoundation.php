@@ -26,9 +26,6 @@ class HttpFoundation
     public function setFromRequest(Request $request): void
     {
         $header = $request->headers->get('x-token-global');
-        if (\is_array($header)) {
-            $header = implode('', $header);
-        }
 
         $this->tokenCollection->add(
             'global',

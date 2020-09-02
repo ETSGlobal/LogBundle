@@ -7,12 +7,15 @@ use ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\ExclusionStrategyInter
 use ETSGlobal\LogBundle\Monolog\Handler\SlackHandler;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @internal
  */
 final class SlackHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var SlackHandler */
     private $slackHandler;
 

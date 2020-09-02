@@ -43,7 +43,7 @@ final class TokenCollectionTest extends TestCase
         $tokens = $this->tokenCollection->getTokens();
         $this->assertArrayHasKey('my_fake_name', $tokens);
         $this->assertEquals('my_fake_name', $tokens['my_fake_name']->getName());
-        $this->assertRegExp('/^my_fake_name_[a-z0-9]{13}$/', $tokens['my_fake_name']->getValue());
+        $this->assertMatchesRegularExpression('/^my_fake_name_[a-z0-9]{13}$/', $tokens['my_fake_name']->getValue());
     }
 
     /**
@@ -121,7 +121,7 @@ final class TokenCollectionTest extends TestCase
         $this->assertArrayHasKey('my_fake_name', $tokens);
         $this->assertEquals('my_fake_name', $tokens['my_fake_name']->getName());
         $this->assertNotEquals('my_previous_token_value', $tokens['my_fake_name']->getValue());
-        $this->assertRegExp('/^my_fake_name_[a-z0-9]{13}$/', $tokens['my_fake_name']->getValue());
+        $this->assertMatchesRegularExpression('/^my_fake_name_[a-z0-9]{13}$/', $tokens['my_fake_name']->getValue());
     }
 
     /**

@@ -96,6 +96,16 @@
             <property name="fixable" type="boolean" value="true"/>
         </properties>
     </rule>
+    <!-- Require comma after last element in multi-line array -->
+    <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma"/>
+    <!-- Disallows implicit array creation. -->
+    <rule ref="SlevomatCodingStandard.Arrays.DisallowImplicitArrayCreation"/>
+    <!-- Require presence of constant visibility -->
+    <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility">
+        <properties>
+            <property name="fixable" type="boolean" value="true"/>
+        </properties>
+    </rule>
     <!-- Disallows late static binding for constants. -->
     <rule ref="SlevomatCodingStandard.Classes.DisallowLateStaticBindingForConstants"/>
     <!-- Forbid empty lines around class declarations -->
@@ -152,11 +162,18 @@
     <rule ref="SlevomatCodingStandard.Commenting.UselessInheritDocComment"/>
     <!-- Forbid assignments in conditions -->
     <rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition"/>
-    <!-- Enforces configurable number of lines around control structures. -->
-    <rule ref="SlevomatCodingStandard.ControlStructures.ControlStructureSpacing">
+    <!-- Enforces configurable number of lines around block control structures. -->
+    <rule ref="SlevomatCodingStandard.ControlStructures.BlockControlStructureSpacing">
         <properties>
             <property name="tokensToCheck" type="array">
                 <element value="T_TRY"/>
+            </property>
+        </properties>
+    </rule>
+    <!-- Enforces configurable number of lines around jump statements. -->
+    <rule ref="SlevomatCodingStandard.ControlStructures.JumpStatementsSpacing">
+        <properties>
+            <property name="tokensToCheck" type="array">
                 <element value="T_BREAK"/>
                 <element value="T_CONTINUE"/>
                 <element value="T_RETURN"/>
@@ -263,7 +280,7 @@
     <!-- Require presence of declare(strict_types=1) -->
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
         <properties>
-            <property name="newlinesCountBetweenOpenTagAndDeclare" value="1"/>
+            <property name="newlinesCountBetweenOpenTagAndDeclare" value="2"/>
             <property name="spacesCountAroundEqualsSign" value="0"/>
         </properties>
     </rule>
@@ -271,26 +288,40 @@
     <rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
     <!-- Require ? when default value is null -->
     <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue"/>
+
+    <!-- Checks for missing parameter typehints in case they can be declared natively -->
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint">
+        <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingTraversableTypeHintSpecification" />
+        <properties>
+            <property name="traversableTypeHints" type="array" value="Doctrine\Common\Collections\Collection"/>
+        </properties>
+    </rule>
     <!-- Require one space between typehint and variable, require no space between nullability sign and typehint -->
     <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHintSpacing"/>
+
+    <!-- Checks for missing property typehints in case they can be declared natively -->
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
+        <properties>
+            <property name="traversableTypeHints" type="array" value="Doctrine\Common\Collections\Collection"/>
+        </properties>
+    </rule>
+    <!-- CHeck property typehint spacing -->
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHintSpacing" />
+
+    <!-- Checks for missing return typehints in case they can be declared natively -->
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
+        <exclude name="SlevomatCodingStandard.TypeHints.ReturnTypeHint.MissingTraversableTypeHintSpecification" />
+        <properties>
+            <property name="traversableTypeHints" type="array" value="Doctrine\Common\Collections\Collection"/>
+        </properties>
+    </rule>
     <!-- Require space around colon in return types -->
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing">
         <properties>
             <property name="spacesCountBeforeColon" value="0"/>
         </properties>
     </rule>
-    <!-- Require types to be written as natively if possible;
-         require iterable types to specify phpDoc with their content;
-         forbid useless/duplicated information in phpDoc -->
-    <rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
-        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableParameterTypeHintSpecification"/>
-        <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingTraversableReturnTypeHintSpecification"/>
-        <properties>
-            <property name="traversableTypeHints" type="array" value="Doctrine\Common\Collections\Collection"/>
-            <property name="allAnnotationsAreUseful" type="boolean" value="true"/>
-            <property name="enableEachParameterAndReturnInspection" type="boolean" value="true"/>
-        </properties>
-    </rule>
+
     <!-- Reports useless @var annotation (or whole documentation comment) for constants because the type of constant is always clear. -->
     <rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
     <!-- Looks for duplicate assignments to a variable. -->
