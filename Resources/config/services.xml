@@ -17,6 +17,7 @@
         <parameter key="ets_global_log.monolog.handler.content_data_modifier.add_kibana_token_filter_links.class">ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks</parameter>
         <parameter key="ets_global_log.monolog.handler.exclusion_strategy.status_codes_http_exception.class">ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy</parameter>
         <parameter key="ets_global_log.monolog.handler.slack.class">ETSGlobal\LogBundle\Monolog\Handler\SlackHandler</parameter>
+        <parameter key="ets_global_log.monolog.handler.ignore_deprecation.class">ETSGlobal\LogBundle\Monolog\Handler\IgnoreDeprecationHandler</parameter>
     </parameters>
 
     <services>
@@ -82,6 +83,8 @@
                 <argument>409</argument>
             </argument>
         </service>
+
+        <service id="ets_global_log.monolog.handler.ignore_deprecation" class="%ets_global_log.monolog.handler.ignore_deprecation.class%" />
 
         <service id="ets_global_log.monolog.handler.slack" class="%ets_global_log.monolog.handler.slack.class%" public="false">
             <argument type="string">%ets_global_log.handlers.slack.token%</argument>
