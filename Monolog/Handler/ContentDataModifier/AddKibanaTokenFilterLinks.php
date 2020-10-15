@@ -12,7 +12,7 @@ use ETSGlobal\LogBundle\Tracing\TokenCollection;
 final class AddKibanaTokenFilterLinks implements ContentDataModifierInterface
 {
     // phpcs:disable Generic.Files.LineLength.TooLong
-    private const KIBANA_URI_PATTERN = '#/discover?_g=()&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:\'logstash-*\',key:%1$s,negate:!f,value:%2$s),query:(match:(%1$s:(query:%2$s,type:phrase))))),index:\'logstash-*\',interval:auto,query:\'\',sort:!(\'@timestamp\',desc))';
+    private const KIBANA_URI_PATTERN = '#/?_g=(filters:!(),time:(from:now-24h,to:now))&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,key:%1$s,negate:!f,params:(query:%2$s),type:phrase),query:(match_phrase:(%1$s:%2$s)))),interval:auto,query:(language:kuery,query:\'\'),sort:!())';
 
     /** @var string */
     private $kibanaUrl;
