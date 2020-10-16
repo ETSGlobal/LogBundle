@@ -24,7 +24,7 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
         $this->tokenCollection = new TokenCollection();
 
         $this->modifier = new AddKibanaTokenFilterLinks(
-            'https://kibana.example.com/app/kibana',
+            'https://kibana.example.com/app/discover',
             $this->tokenCollection
         );
     }
@@ -59,21 +59,21 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
                 [
                     'message' => 'my_fake_message',
                     'extra' => [
-                        'token_test' => 'extra_token_test_value',
+                        'token_global' => 'global_5f885585dc39a',
                     ],
                 ],
                 [
-                    'test' => 'extra_token_test_value',
-                    'test2' => 'token_value',
+                    'global' => 'global_5f885585dc39a',
+                    'process' => 'process_5f886d54a8443',
                 ],
                 [
                     'attachments' => [
                         [
                             'actions' => [
                                 [
-                                    'text' => 'token_test',
+                                    'text' => 'token_global',
                                     'type' => 'button',
-                                    'url' => 'https://kibana.example.com/app/kibana#/discover?_g=()&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,index:\'logstash-*\',key:token_test,negate:!f,value:extra_token_test_value),query:(match:(token_test:(query:extra_token_test_value,type:phrase))))),index:\'logstash-*\',interval:auto,query:\'\',sort:!(\'@timestamp\',desc))',
+                                    'url' => 'https://kibana.example.com/app/discover#/?_g=(filters:!(),time:(from:now-24h,to:now))&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,key:token_global,negate:!f,params:(query:global_5f885585dc39a),type:phrase),query:(match_phrase:(token_global:global_5f885585dc39a)))),interval:auto,query:(language:kuery,query:\'\'),sort:!())',
                                 ],
                             ],
                         ],
