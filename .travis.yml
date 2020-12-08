@@ -28,6 +28,10 @@ jobs:
       env:
         - DEPENDENCIES="symfony/lts:^3"
         - STATIC_ANALYSIS=true
+    # Test PHP nightly
+    - php: nightly
+      env:
+        - COMPOSER_FLAGS="--ignore-platform-reqs=php"
 
 before_install:
   - phpenv config-rm xdebug.ini || true
