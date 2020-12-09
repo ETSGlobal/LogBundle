@@ -7,6 +7,7 @@ cache:
 php:
   - 7.3
   - 7.4
+  - 8.0
 
 jobs:
   fast_finish: true
@@ -14,6 +15,8 @@ jobs:
     - php: nightly
   include:
     # Minimum supported dependencies with the latest and oldest PHP version
+    - php: 8.0
+      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     - php: 7.4
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     - php: 7.3
