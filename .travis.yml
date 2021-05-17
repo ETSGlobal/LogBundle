@@ -5,9 +5,9 @@ cache:
     - $HOME/.composer/cache
 
 php:
-  - 7.3
   - 7.4
   - 8.0
+  - nightly
 
 jobs:
   fast_finish: true
@@ -19,12 +19,10 @@ jobs:
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
     - php: 7.4
       env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
-    - php: 7.3
-      env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest"
 
     # Test LTS versions. This makes sure we do not use Symfony packages with version greater
     # than 3. Read more at https://github.com/symfony/lts
-    - php: 7.3
+    - php: 7.4
       env:
         - DEPENDENCIES="symfony/lts:^3"
         - STATIC_ANALYSIS=true
