@@ -12,7 +12,8 @@ Main features:
 - Automatic logger injection.
 - Provide `TokenCollection` utility to enable downstream applications for request tracing from app to app.
 - Automatically configure `global` and `process` token tracing for incoming HTTP requests/responses as well as long-running processes.
-- Automatically enrich log context with the application name and tracing tokens. 
+- Automatically enrich log context with the application name and tracing tokens.
+- Processor to change the log level of exceptions, like Symfony's `NotFoundHttpException`
 - Slack handler: An extended version of Monolog's slack handler, with custom message contents, and custom filters.
 - Provides a Guzzle middleware to forward tokens through HTTP calls.
 - Provides a Symfony HttpClient decorator to forward tokens through HTTP calls.
@@ -61,6 +62,8 @@ ets_global_log:
         channel: "#channel-name"
         jira_url: "example.jira.com"
         kibana_url: "kibana.example.com/app/kibana"
+    custom_exceptions_levels:
+        My\Custom\Exception: !php/const Monolog\Logger::INFO
 ```
 
 ### Monolog configuration

@@ -9,6 +9,7 @@
         <parameter key="ets_global_log.tracing.plugins.symfony.http_foundation.class">ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation</parameter>
         <parameter key="ets_global_log.tracing.plugins.guzzle.token_global_middleware.class">ETSGlobal\LogBundle\Tracing\Plugins\Guzzle\TokenGlobalMiddleware</parameter>
         <parameter key="ets_global_log.event_subscriber.tracing.class">ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber</parameter>
+        <parameter key="ets_global_log.monolog.processor.change_exceptions_log_level.class">ETSGlobal\LogBundle\Monolog\Processor\ChangeExceptionsLogLevelProcessor</parameter>
         <parameter key="ets_global_log.monolog.processor.token_collection.class">ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor</parameter>
         <parameter key="ets_global_log.monolog.processor.extra_field.class">ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor</parameter>
         <parameter key="ets_global_log.monolog.formatter.token_collection.class">ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter</parameter>
@@ -42,6 +43,13 @@
             <argument type="service" id="ets_global_log.tracing.plugins.symfony.http_foundation"/>
 
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="ets_global_log.monolog.processor.change_exceptions_log_level" class="%ets_global_log.monolog.processor.change_exceptions_log_level.class%" public="false">
+            <argument type="string">%ets_global_log.custom_exceptions_levels%</argument>
+            <argument type="string">%ets_global_log.http_exceptions_levels%</argument>
+
+            <tag name="monolog.processor" />
         </service>
 
         <service id="ets_global_log.monolog.processor.token_collection" class="%ets_global_log.monolog.processor.token_collection.class%" public="false">
