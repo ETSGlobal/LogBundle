@@ -24,6 +24,8 @@ final class ETSGlobalLogExtension extends Extension
 
         $container->setParameter('ets_global_log.app_name', $config['app_name']);
         $container->setParameter('ets_global_log.log_format', $config['log_format']);
+        $container->setParameter('ets_global_log.custom_exceptions_levels', $config['custom_exceptions_levels']);
+        $container->setParameter('ets_global_log.http_exceptions_levels', $config['http_exceptions_levels']);
         $container->setParameter('ets_global_log.handlers.slack.token', $config['slack_handler']['token']);
         $container->setParameter('ets_global_log.handlers.slack.channel', $config['slack_handler']['channel']);
         $container->setParameter('ets_global_log.handlers.slack.icon_emoji', $config['slack_handler']['icon_emoji']);
