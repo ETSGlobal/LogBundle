@@ -25,6 +25,10 @@ final class ChangeExceptionsLogLevelProcessor implements ProcessorInterface
     /** @var array<class-string,int> */
     private array $httpExceptionsConfig;
 
+    /**
+     * @param array<class-string,int> $customExceptionsConfig
+     * @param array<class-string,int> $httpExceptionsConfig
+     */
     public function __construct(array $customExceptionsConfig, array $httpExceptionsConfig)
     {
         $this->customExceptionsConfig = $customExceptionsConfig;
