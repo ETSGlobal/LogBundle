@@ -41,7 +41,7 @@ class HttpClientDecorator implements HttpClientInterface
         return $this->httpClient->stream($responses, $timeout);
     }
 
-    public function withOptions(array $options): self
+    public function withOptions(array $options): static
     {
         $clone = clone $this;
         $clone->httpClient = $this->httpClient->withOptions($options);
