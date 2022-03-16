@@ -11,13 +11,10 @@ use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\GoneHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * @internal
- */
+/** @internal */
 final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
 {
-    /** @var StatusCodesHttpExceptionExclusionStrategy */
-    private $statusCodesHttpExceptionExclusionStrategy;
+    private StatusCodesHttpExceptionExclusionStrategy $statusCodesHttpExceptionExclusionStrategy;
 
     protected function setUp(): void
     {
@@ -27,23 +24,17 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     */
-    public function it_does_not_exclude_record_when_no_exception(): void
+    public function testDoesNotExcludeRecordWhenNoException(): void
     {
         $this->assertFalse($this->statusCodesHttpExceptionExclusionStrategy->excludeRecord([]));
     }
 
-    /**
-     * @test
-     */
-    public function it_does_not_exclude_record_when_invalid_exception(): void
+    public function testDoesNotExcludeRecordWhenInvalidException(): void
     {
         $this->assertFalse(
             $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(
-                ['context' => ['exception' => new \stdClass()]]
-            )
+                ['context' => ['exception' => new \stdClass()]],
+            ),
         );
     }
 
@@ -55,14 +46,11 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider exceptionProvider
-     */
-    public function it_does_not_exclude_records_when_status_codes_not_excluded(\Throwable $exception): void
+    /** @dataProvider exceptionProvider */
+    public function testDoesNotExcludeRecordsWhenStatusCodesNotExcluded(\Throwable $exception): void
     {
         $this->assertFalse(
-            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(['context' => ['exception' => $exception]])
+            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(['context' => ['exception' => $exception]]),
         );
     }
 
@@ -74,14 +62,11 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider excludedExceptionProvider
-     */
-    public function it_excludes_records_when_excluded_exception_codes(\Throwable $exception): void
+    /** @dataProvider excludedExceptionProvider */
+    public function testExcludesRecordsWhenExcludedExceptionCodes(\Throwable $exception): void
     {
         $this->assertTrue(
-            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(['context' => ['exception' => $exception]])
+            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(['context' => ['exception' => $exception]]),
         );
     }
 }

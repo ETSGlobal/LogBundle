@@ -6,7 +6,6 @@ namespace ETSGlobal\LogBundle\Tests\Tracing\Plugins\Symfony;
 
 use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpClientDecorator;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
-use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -20,22 +19,18 @@ class HttpClientDecoratorTest extends TestCase
     use ProphecyTrait;
 
     /** @var HttpClientInterface|ObjectProphecy */
-    private $httpClientMock;
+    private ObjectProphecy $httpClient;
 
     /** @var TokenCollection|ObjectProphecy */
-    private $tokenCollectionMock;
+    private ObjectProphecy $tokenCollection;
 
-    /** @var HttpClientDecorator */
-    private $decorator;
+    private HttpClientDecorator $decorator;
 
     protected function setUp(): void
     {
-        $this->httpClientMock = $this->prophesize(HttpClientInterface::class);
-        $this->tokenCollectionMock = $this->prophesize(TokenCollection::class);
-        $this->decorator = new HttpClientDecorator(
-            $this->httpClientMock->reveal(),
-            $this->tokenCollectionMock->reveal()
-        );
+        $this->httpClient = $this->prophesize(HttpClientInterface::class);
+        $this->tokenCollection = $this->prophesize(TokenCollection::class);
+        $this->decorator = new HttpClientDecorator($this->httpClient->reveal(), $this->tokenCollection->reveal());
     }
 
     public function testInjectsTokenGlobalInRequestHeaders(): void
@@ -47,15 +42,9 @@ class HttpClientDecoratorTest extends TestCase
             ],
         ];
 
-        $this->tokenCollectionMock
-            ->getTokenValue('global')
-            ->willReturn('token_global')
-        ;
+        $this->tokenCollection->getTokenValue('global')->shouldBeCalled()->willReturn('token_global');
 
-        $this->httpClientMock
-            ->request('GET', 'example.com/api', $expectedOptions)
-            ->shouldBeCalled()
-        ;
+        $this->httpClient->request('GET', 'example.com/api', $expectedOptions)->shouldBeCalled();
 
         $this->decorator->request('GET', 'example.com/api', $options);
     }
@@ -64,27 +53,24 @@ class HttpClientDecoratorTest extends TestCase
     {
         $expectedResponse = $this->prophesize(ResponseInterface::class)->reveal();
 
-        $this->httpClientMock
+        $this->httpClient
             ->request('GET', 'example.com/api', Argument::type('array'))
             ->willReturn($expectedResponse)
         ;
 
         $response = $this->decorator->request('GET', 'example.com/api', []);
 
-        Assert::assertSame($response, $expectedResponse);
+        $this->assertSame($response, $expectedResponse);
     }
 
     public function testForwardsStreamResponse(): void
     {
         $expectedResponse = $this->prophesize(ResponseStreamInterface::class)->reveal();
 
-        $this->httpClientMock
-            ->stream([], 30)
-            ->willReturn($expectedResponse)
-        ;
+        $this->httpClient->stream([], 30)->shouldBeCalled()->willReturn($expectedResponse);
 
         $response = $this->decorator->stream([], 30);
 
-        Assert::assertSame($response, $expectedResponse);
+        $this->assertSame($response, $expectedResponse);
     }
 }

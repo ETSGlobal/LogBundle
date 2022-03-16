@@ -10,12 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HttpFoundation
 {
-    /** @var TokenCollection */
-    private $tokenCollection;
-
-    public function __construct(TokenCollection $tokenCollection)
+    public function __construct(private TokenCollection $tokenCollection)
     {
-        $this->tokenCollection = $tokenCollection;
     }
 
     /**
@@ -27,20 +23,15 @@ class HttpFoundation
     public function setFromRequest(Request $request): void
     {
         $header = $request->headers->get('x-token-global');
-        if (\is_array($header)) {
-            $header = implode('', $header);
-        }
 
         $this->tokenCollection->add(
             'global',
             $header ?? null,
-            true
+            true,
         );
     }
 
-    /**
-     * Sets all tokens in the response headers.
-     */
+    /** Sets all tokens in the response headers.*/
     public function setToResponse(Response $response): void
     {
         foreach ($this->tokenCollection->getTokens() as $token) {

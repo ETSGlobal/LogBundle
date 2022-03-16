@@ -15,48 +15,15 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
  * HttpNotFoundException we want to lower the log level to something like INFO
  * because there is nothing wrong with our application.
  *
+ * @phpstan-import-type LevelName from Logger
+ * @phpstan-import-type Record from Logger
+ * @phpstan-import-type Level from Logger
  * @internal
  */
 final class ChangeExceptionsLogLevelProcessor implements ProcessorInterface
 {
-    /** @var array<class-string,int> */
-    private array $customExceptionsConfig;
-
-    /** @var array<class-string,int> */
-    private array $httpExceptionsConfig;
-
-    /**
-     * @param array<class-string,int> $customExceptionsConfig
-     * @param array<class-string,int> $httpExceptionsConfig
-     */
-    public function __construct(array $customExceptionsConfig, array $httpExceptionsConfig)
+    public function __construct(private array $customExceptionsConfig, private array $httpExceptionsConfig)
     {
-        $this->customExceptionsConfig = $customExceptionsConfig;
-        $this->httpExceptionsConfig = $httpExceptionsConfig;
-    }
-
-    public function __invoke(array $record): array
-    {
-        if ($record['level'] < 400) {
-            return $record;
-        }
-        if (!isset($record['context']['exception'])) {
-            return $record;
-        }
-
-        $throwable = $record['context']['exception'];
-        if (!$throwable instanceof \Throwable) {
-            // For some reason the provided value is not an actual exception, so we can't do anything with it
-            return $record;
-        }
-
-        // Change the log level if necessary
-        $modifiedLogLevel = $this->determineLogLevel($throwable, $record['level']);
-
-        $record['level'] = $modifiedLogLevel;
-        $record['level_name'] = Logger::getLevelName($modifiedLogLevel);
-
-        return $record;
     }
 
     private function determineLogLevel(\Throwable $throwable, int $currentLevel): int
@@ -87,5 +54,33 @@ final class ChangeExceptionsLogLevelProcessor implements ProcessorInterface
         }
 
         return $currentLevel;
+    }
+
+    /** @phpstan-return Record */
+    public function __invoke(array $record): array
+    {
+        if ($record['level'] < 400) {
+            return $record;
+        }
+
+        if (!isset($record['context']['exception'])) {
+            return $record;
+        }
+
+        $throwable = $record['context']['exception'];
+
+        if (!$throwable instanceof \Throwable) {
+            // For some reason the provided value is not an actual exception, so we can't do anything with it
+            return $record;
+        }
+
+        // Change the log level if necessary
+        $modifiedLogLevel = $this->determineLogLevel($throwable, $record['level']);
+
+        /** @phpstan-var Level $modifiedLogLevel */
+        $record['level'] = $modifiedLogLevel;
+        $record['level_name'] = Logger::getLevelName($modifiedLogLevel);
+
+        return $record;
     }
 }

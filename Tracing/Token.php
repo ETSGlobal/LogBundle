@@ -16,20 +16,12 @@ namespace ETSGlobal\LogBundle\Tracing;
  */
 class Token
 {
-    /** @var string */
-    private $name;
-
-    /** @var string */
-    private $value;
-
     /**
      * @param string $name  identifier of the token, must be unique in a TokenCollection
      * @param string $value value of the token, must be unique for a given functional event
      */
-    public function __construct(string $name, string $value)
+    public function __construct(private string $name, private string $value)
     {
-        $this->name = $name;
-        $this->value = $value;
     }
 
     public function getName(): string

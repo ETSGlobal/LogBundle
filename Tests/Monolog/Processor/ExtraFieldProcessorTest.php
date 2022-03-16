@@ -7,15 +7,10 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Processor;
 use ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- */
+/** @internal */
 final class ExtraFieldProcessorTest extends TestCase
 {
-    /**
-     * @test
-     */
-    public function process_record(): void
+    public function testProcessRecord(): void
     {
         $processor = new ExtraFieldProcessor('foo', 'bar');
 

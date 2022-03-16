@@ -9,21 +9,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Contracts\HttpClient\ResponseStreamInterface;
 
-/**
- * Decorates a HttpClientInterface and injects the tracing token in the request.
- */
+/** Decorates a HttpClientInterface and injects the tracing token in the request.*/
 class HttpClientDecorator implements HttpClientInterface
 {
-    /** @var HttpClientInterface */
-    private $httpClient;
-
-    /** @var TokenCollection */
-    private $tokenCollection;
-
-    public function __construct(HttpClientInterface $httpClient, TokenCollection $tokenCollection)
+    public function __construct(private HttpClientInterface $httpClient, private TokenCollection $tokenCollection)
     {
-        $this->httpClient = $httpClient;
-        $this->tokenCollection = $tokenCollection;
     }
 
     public function request(string $method, string $url, array $options = []): ResponseInterface
@@ -33,10 +23,7 @@ class HttpClientDecorator implements HttpClientInterface
         return $this->httpClient->request($method, $url, $options);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function stream($responses, ?float $timeout = null): ResponseStreamInterface
+    public function stream(ResponseInterface|iterable $responses, ?float $timeout = null): ResponseStreamInterface
     {
         return $this->httpClient->stream($responses, $timeout);
     }

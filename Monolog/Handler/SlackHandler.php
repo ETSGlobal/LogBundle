@@ -11,16 +11,18 @@ use Monolog\Logger;
 
 /**
  * @internal
+ *
+ * @phpstan-import-type Level from Logger
  */
 final class SlackHandler extends BaseSlackHandler
 {
-    /** @var ExclusionStrategyInterface[] */
-    private $exclusionStrategies = [];
+    private array $exclusionStrategies = [];
 
-    /** @var ContentDataModifierInterface[] */
-    private $contentDataModifiers = [];
+    private array $contentDataModifiers = [];
 
     /**
+     * {@inheritdoc}
+     * @phpstan-param Level $level
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -33,7 +35,7 @@ final class SlackHandler extends BaseSlackHandler
         bool $bubble = true,
         bool $useShortAttachment = false,
         bool $includeContextAndExtra = false,
-        array $excludeFields = []
+        array $excludeFields = [],
     ) {
         parent::__construct(
             $token,
@@ -45,7 +47,7 @@ final class SlackHandler extends BaseSlackHandler
             $bubble,
             $useShortAttachment,
             $includeContextAndExtra,
-            $excludeFields
+            $excludeFields,
         );
     }
 
@@ -70,10 +72,8 @@ final class SlackHandler extends BaseSlackHandler
         return parent::isHandling($record);
     }
 
-    /**
-     * @param array|mixed $record
-     */
-    protected function prepareContentData($record): array
+    /** phpcs:disable */
+    protected function prepareContentData(array $record): array
     {
         $dataArray = parent::prepareContentData($record);
 
@@ -87,6 +87,7 @@ final class SlackHandler extends BaseSlackHandler
 
         $dataArray['attachments'] = json_encode($dataArray['attachments']);
 
+        /** @var array<string> $dataArray */
         return $dataArray;
     }
 }

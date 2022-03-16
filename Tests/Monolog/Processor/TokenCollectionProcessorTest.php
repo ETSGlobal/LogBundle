@@ -11,22 +11,15 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
-/**
- * @internal
- */
+/** @internal */
 final class TokenCollectionProcessorTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var ObjectProphecy|ObjectProphecy<TokenCollection>
-     */
-    private $tokenCollectionMock;
+    /** @var ObjectProphecy|TokenCollection */
+    private ObjectProphecy $tokenCollectionMock;
 
-    /**
-     * @var TokenCollectionProcessor
-     */
-    private $tokenProcessor;
+    private TokenCollectionProcessor $tokenProcessor;
 
     protected function setUp(): void
     {
@@ -35,15 +28,12 @@ final class TokenCollectionProcessorTest extends TestCase
         $this->tokenProcessor = new TokenCollectionProcessor($this->tokenCollectionMock->reveal());
     }
 
-    /**
-     * @test
-     */
-    public function process_record_without_prefix(): void
+    public function testProcessRecordWithoutPrefix(): void
     {
         $tokenMock = $this->prophesize(Token::class);
-        $tokenMock->getName()->willReturn('my_fake_token_name')->shouldBeCalled();
-        $tokenMock->getValue()->willReturn('my_fake_token_value')->shouldBeCalled();
-        $this->tokenCollectionMock->getTokens()->willReturn([$tokenMock->reveal()])->shouldBeCalled();
+        $tokenMock->getName()->shouldBeCalled()->willReturn('my_fake_token_name');
+        $tokenMock->getValue()->shouldBeCalled()->willReturn('my_fake_token_value');
+        $this->tokenCollectionMock->getTokens()->shouldBeCalled()->willReturn([$tokenMock->reveal()]);
 
         $expectedRecord = [
             'extra' => [

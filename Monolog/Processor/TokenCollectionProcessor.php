@@ -7,30 +7,17 @@ namespace ETSGlobal\LogBundle\Monolog\Processor;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Monolog\Processor\ProcessorInterface;
 
-/**
- * @internal
- */
+/** @internal */
 final class TokenCollectionProcessor implements ProcessorInterface
 {
-    /** @var TokenCollection */
-    private $tokenCollection;
-
-    public function __construct(TokenCollection $tokenCollection)
+    public function __construct(private TokenCollection $tokenCollection)
     {
-        $this->tokenCollection = $tokenCollection;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function __invoke(array $record): array
     {
         foreach ($this->tokenCollection->getTokens() as $token) {
-            if (!isset($record['extra'])) {
-                $record['extra'] = [];
-            }
-
-            $record['extra']['token_'.$token->getName()] = $token->getValue();
+            $record['extra']['token_' . $token->getName()] = $token->getValue();
         }
 
         return $record;
