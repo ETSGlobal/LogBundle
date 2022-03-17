@@ -5,8 +5,8 @@ includes:
 
 parameters:
     excludePaths:
+        - %rootDir%/../../../DependencyInjection/Configuration.php
         - %rootDir%/../../../Tests
         - %rootDir%/../../../vendor
-        - %rootDir%/../../../DependencyInjection/Configuration.php
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
