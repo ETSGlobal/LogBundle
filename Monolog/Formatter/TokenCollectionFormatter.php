@@ -8,39 +8,26 @@ use ETSGlobal\LogBundle\Tracing\Token;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Monolog\Formatter\LineFormatter;
 
-/**
- * @internal
- */
+/** @internal */
 final class TokenCollectionFormatter extends LineFormatter
 {
-    /**
-     * @var TokenCollection
-     */
-    private $tokenCollection;
-
-    /**
-     * @var string Original format
-     */
-    private $originalFormat;
-
     public function __construct(
-        TokenCollection $tokenCollection,
-        ?string $format = null,
+        private TokenCollection $tokenCollection,
+        private ?string $originalFormat = null,
         ?string $dateFormat = null,
         bool $allowInlineLineBreaks = false,
-        bool $ignoreEmptyContextAndExtra = false
+        bool $ignoreEmptyContextAndExtra = false,
     ) {
-        parent::__construct($format, $dateFormat, $allowInlineLineBreaks, $ignoreEmptyContextAndExtra);
-        $this->originalFormat = $this->format;
-        $this->tokenCollection = $tokenCollection;
+        parent::__construct($originalFormat, $dateFormat, $allowInlineLineBreaks, $ignoreEmptyContextAndExtra);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function format(array $record): string
     {
-        $this->format = str_replace('%token_collection%', $this->getFormattedPlaceholder(), $this->originalFormat);
+        $this->format = str_replace(
+            '%token_collection%',
+            $this->getFormattedPlaceholder(),
+            $this->originalFormat ?? '',
+        );
 
         return parent::format($record);
     }
@@ -53,8 +40,12 @@ final class TokenCollectionFormatter extends LineFormatter
             return '';
         }
 
-        return implode(' ', array_map(static function (Token $token): string {
-            return sprintf('%%extra.token_%s%%', $token->getName());
-        }, $tokens));
+        return implode(
+            ' ',
+            array_map(
+                static fn (Token $token): string => sprintf('%%extra.token_%s%%', $token->getName()),
+                $tokens,
+            ),
+        );
     }
 }

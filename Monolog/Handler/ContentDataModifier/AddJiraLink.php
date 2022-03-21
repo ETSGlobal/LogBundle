@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
-/**
- * @internal
- */
+/** @internal */
 final class AddJiraLink implements ContentDataModifierInterface
 {
     private const JIRA_PATH = '/secure/CreateIssue.jspa';
@@ -18,12 +16,8 @@ final class AddJiraLink implements ContentDataModifierInterface
         'description=%1$s', // Replaced by log message
     ];
 
-    /** @var string */
-    private $jiraUrl;
-
-    public function __construct(string $jiraUrl)
+    public function __construct(private string $jiraUrl)
     {
-        $this->jiraUrl = $jiraUrl;
     }
 
     public function modify(array &$contentData, array $record): void
@@ -38,7 +32,7 @@ final class AddJiraLink implements ContentDataModifierInterface
 
         $query = implode('&', self::URI_PARAMS);
         $url = implode('?', [
-            $this->jiraUrl.self::JIRA_PATH,
+            $this->jiraUrl . self::JIRA_PATH,
             sprintf($query, urlencode($record['message'])),
         ]);
 

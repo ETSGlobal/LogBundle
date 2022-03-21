@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\ETSGlobal\LogBundle\Monolog\Handler;
 
-use ETSGlobal\LogBundle\Monolog\Handler\DeprecationHandler;
 use ETSGlobal\LogBundle\Monolog\Handler\IgnoreDeprecationHandler;
 use PHPUnit\Framework\TestCase;
 
@@ -34,20 +33,13 @@ class IgnoreDeprecationHandlerTest extends TestCase
                 ],
                 false,
             ],
-            [
-                [
-                ],
-                false,
-            ]
         ];
     }
 
-    /**
-     * @dataProvider provideData
-     */
+    /** @dataProvider provideData */
     public function testHandle(array $record, bool $expected): void
     {
         $handler = new IgnoreDeprecationHandler();
-        self::assertSame($expected, $handler->handle($record));
+        $this->assertSame($expected, $handler->handle($record));
     }
 }

@@ -7,24 +7,18 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddClassLineContext;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- */
+/** @internal */
 final class AddClassLineContextTest extends TestCase
 {
-    /** @var AddClassLineContext */
-    private $modifier;
+    private AddClassLineContext $modifier;
 
     protected function setUp(): void
     {
         $this->modifier = new AddClassLineContext();
     }
 
-    /**
-     * @test
-     * @dataProvider modifyDataProvider
-     */
-    public function it_adds_class_line_to_attachements(array $record, array $expectedContentData): void
+    /** @dataProvider modifyDataProvider */
+    public function testAddsClassLineToAttachements(array $record, array $expectedContentData): void
     {
         $contentData = [];
 

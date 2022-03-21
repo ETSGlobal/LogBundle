@@ -12,9 +12,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
-/**
- * @internal
- */
+/** @internal */
 final class Configuration implements ConfigurationInterface
 {
     private const DEFAULT_APP_NAME = 'default';
@@ -33,12 +31,7 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('ets_global_log');
 
-        // Keep compatibility with symfony/config < 4.2
-        if (\method_exists($treeBuilder, 'getRootNode')) {
-            $rootNode = $treeBuilder->getRootNode();
-        } else {
-            $rootNode = $treeBuilder->root('ets_global_log');
-        }
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
@@ -47,7 +40,16 @@ final class Configuration implements ConfigurationInterface
                 ->arrayNode('http_exceptions_levels')
                     ->defaultValue(self::DEFAULT_HTTP_EXCEPTIONS_LEVELS)
                     ->useAttributeAsKey('name')
-                    ->prototype('scalar')->end()
+                    ->prototype('enum')->values([
+                        Logger::DEBUG,
+                        Logger::INFO,
+                        Logger::NOTICE,
+                        Logger::WARNING,
+                        Logger::ERROR,
+                        Logger::CRITICAL,
+                        Logger::ALERT,
+                        Logger::EMERGENCY,
+                    ])->end()
                 ->end()
                 ->arrayNode('custom_exceptions_levels')
                     ->defaultValue([])

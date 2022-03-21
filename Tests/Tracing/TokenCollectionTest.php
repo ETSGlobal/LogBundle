@@ -7,23 +7,17 @@ namespace Tests\ETSGlobal\LogBundle\Tracing;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- */
+/** @internal */
 final class TokenCollectionTest extends TestCase
 {
-    /** @var TokenCollection */
-    private $tokenCollection;
+    private TokenCollection $tokenCollection;
 
     protected function setUp(): void
     {
         $this->tokenCollection = new TokenCollection();
     }
 
-    /**
-     * @test
-     */
-    public function add_will_throw_invalid_argument_exception(): void
+    public function testAddWillThrowInvalidArgumentException(): void
     {
         $this->tokenCollection->add('my_fake_name');
 
@@ -34,10 +28,7 @@ final class TokenCollectionTest extends TestCase
         $this->tokenCollection->add('my_fake_name');
     }
 
-    /**
-     * @test
-     */
-    public function add_without_value(): void
+    public function testAddWithoutValue(): void
     {
         $this->tokenCollection->add('my_fake_name');
 
@@ -47,10 +38,7 @@ final class TokenCollectionTest extends TestCase
         $this->assertMatchesRegularExpression('/^my_fake_name_[a-z0-9]{13}$/', $tokens['my_fake_name']->getValue());
     }
 
-    /**
-     * @test
-     */
-    public function add_with_value(): void
+    public function testAddWithValue(): void
     {
         $this->tokenCollection->add('my_fake_name', 'my_fake_value');
 
@@ -60,10 +48,7 @@ final class TokenCollectionTest extends TestCase
         $this->assertEquals('my_fake_value', $tokens['my_fake_name']->getValue());
     }
 
-    /**
-     * @test
-     */
-    public function overwrite_with_value(): void
+    public function testOverwriteWithValue(): void
     {
         $this->tokenCollection->add('my_fake_name', 'my_previous_fake_value', true);
 
@@ -80,19 +65,13 @@ final class TokenCollectionTest extends TestCase
         $this->assertEquals('my_fake_value', $tokens['my_fake_name']->getValue());
     }
 
-    /**
-     * @test
-     */
-    public function remove_do_nothing_and_return_current_instance(): void
+    public function testRemoveDoNothingAndReturnCurrentInstance(): void
     {
         $this->tokenCollection->remove('my_fake_name');
         $this->assertArrayNotHasKey('my_fake_name', $this->tokenCollection->getTokens());
     }
 
-    /**
-     * @test
-     */
-    public function remove(): void
+    public function testRemove(): void
     {
         $this->tokenCollection->add('my_fake_name');
         $this->assertArrayHasKey('my_fake_name', $this->tokenCollection->getTokens());
@@ -101,19 +80,13 @@ final class TokenCollectionTest extends TestCase
         $this->assertArrayNotHasKey('my_fake_name', $this->tokenCollection->getTokens());
     }
 
-    /**
-     * @test
-     */
-    public function replace_will_add_key_if_not_exists(): void
+    public function testReplaceWillAddKeyIfNotExists(): void
     {
         $this->tokenCollection->replace('my_fake_name');
         $this->assertArrayHasKey('my_fake_name', $this->tokenCollection->getTokens());
     }
 
-    /**
-     * @test
-     */
-    public function replace_without_value(): void
+    public function testReplaceWithoutValue(): void
     {
         $this->tokenCollection->add('my_fake_name', 'my_previous_token_value');
 
@@ -125,10 +98,7 @@ final class TokenCollectionTest extends TestCase
         $this->assertMatchesRegularExpression('/^my_fake_name_[a-z0-9]{13}$/', $tokens['my_fake_name']->getValue());
     }
 
-    /**
-     * @test
-     */
-    public function replace_with_value(): void
+    public function testReplaceWithValue(): void
     {
         $this->tokenCollection->add('my_fake_name', 'my_previous_token_value');
 
@@ -140,10 +110,7 @@ final class TokenCollectionTest extends TestCase
         $this->assertEquals('my_new_token_value', $tokens['my_fake_name']->getValue());
     }
 
-    /**
-     * @test
-     */
-    public function get_tokens(): void
+    public function testGetTokens(): void
     {
         $this->tokenCollection->add('my_fake_name', 'my_token_value');
 
@@ -153,10 +120,7 @@ final class TokenCollectionTest extends TestCase
         $this->assertEquals('my_token_value', $tokens['my_fake_name']->getValue());
     }
 
-    /**
-     * @test
-     */
-    public function get_tokens_values(): void
+    public function testGetTokensValues(): void
     {
         $this->tokenCollection->add('my_fake_name', 'my_token_value');
 
@@ -165,31 +129,22 @@ final class TokenCollectionTest extends TestCase
         $this->assertEquals('my_token_value', $tokens['my_fake_name']);
     }
 
-    /**
-     * @test
-     */
-    public function get_token_value_default(): void
+    public function testGetTokenValueDefault(): void
     {
         $this->assertEquals(
             'my_fake_default_value',
-            $this->tokenCollection->getTokenValue('my_fake_name', 'my_fake_default_value')
+            $this->tokenCollection->getTokenValue('my_fake_name', 'my_fake_default_value'),
         );
     }
 
-    /**
-     * @test
-     */
-    public function get_token_value(): void
+    public function testGetTokenValue(): void
     {
         $this->tokenCollection->add('my_fake_name', 'my_token_value');
 
         $this->assertEquals('my_token_value', $this->tokenCollection->getTokenValue('my_fake_name'));
     }
 
-    /**
-     * @test
-     */
-    public function get_iterator(): void
+    public function testGetIterator(): void
     {
         $this->assertInstanceOf(\Iterator::class, $this->tokenCollection->getIterator());
     }

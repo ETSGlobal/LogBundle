@@ -4,12 +4,9 @@ includes:
     - vendor/jangregor/phpstan-prophecy/extension.neon
 
 parameters:
-    excludes_analyse:
+    excludePaths:
         - %rootDir%/../../../Tests
         - %rootDir%/../../../vendor
         - %rootDir%/../../../DependencyInjection/Configuration.php
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
-    ignoreErrors:
-        - message: '/(GetResponseEvent|FilterResponseEvent|PostResponseEvent|ResponseEvent|RequestEvent|TerminateEvent)/'
-          path: %currentWorkingDirectory%/EventSubscriber/TracingEventSubscriber.php

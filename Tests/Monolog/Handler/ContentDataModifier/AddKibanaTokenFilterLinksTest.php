@@ -8,16 +8,12 @@ use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilter
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- */
+/** @internal */
 final class AddKibanaTokenFilterLinksTest extends TestCase
 {
-    /** @var TokenCollection */
-    private $tokenCollection;
+    private TokenCollection $tokenCollection;
 
-    /** @var AddKibanaTokenFilterLinks */
-    private $modifier;
+    private AddKibanaTokenFilterLinks $modifier;
 
     protected function setUp(): void
     {
@@ -25,15 +21,12 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
 
         $this->modifier = new AddKibanaTokenFilterLinks(
             'https://kibana.example.com/app/discover',
-            $this->tokenCollection
+            $this->tokenCollection,
         );
     }
 
-    /**
-     * @test
-     * @dataProvider modifyDataProvider
-     */
-    public function it_adds_tokens_to_contents(array $record, array $tokens, array $expectedContentData): void
+    /** @dataProvider modifyDataProvider */
+    public function testAddsTokensToContents(array $record, array $tokens, array $expectedContentData): void
     {
         $contentData = [];
 

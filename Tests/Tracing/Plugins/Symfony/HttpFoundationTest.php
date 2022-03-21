@@ -10,16 +10,12 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @internal
- */
+/** @internal */
 final class HttpFoundationTest extends TestCase
 {
-    /** @var TokenCollection */
-    private $tokenCollection;
+    private TokenCollection $tokenCollection;
 
-    /** @var HttpFoundation */
-    private $httpFoundation;
+    private HttpFoundation $httpFoundation;
 
     protected function setUp(): void
     {
@@ -27,10 +23,7 @@ final class HttpFoundationTest extends TestCase
         $this->httpFoundation = new HttpFoundation($this->tokenCollection);
     }
 
-    /**
-     * @test
-     */
-    public function it_creates_global_token(): void
+    public function testCreatesGlobalToken(): void
     {
         $this->httpFoundation->setFromRequest(new Request());
 
@@ -39,10 +32,7 @@ final class HttpFoundationTest extends TestCase
         $this->assertIsString($globalTokenValue);
     }
 
-    /**
-     * @test
-     */
-    public function it_creates_global_token_with_value_from_request(): void
+    public function testCreatesGlobalTokenWithValueFromRequest(): void
     {
         $request = new Request();
         $request->headers->set('x-token-global', 'some_token');
@@ -54,10 +44,7 @@ final class HttpFoundationTest extends TestCase
         $this->assertEquals('some_token', $globalTokenValue);
     }
 
-    /**
-     * @test
-     */
-    public function it_sets_tokens_to_response(): void
+    public function testSetsTokensToResponse(): void
     {
         $response = new Response();
 

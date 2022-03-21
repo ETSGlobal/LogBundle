@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\ETSGlobal\LogBundle\Monolog\Processor;
 
 use ETSGlobal\LogBundle\Monolog\Processor\ChangeExceptionsLogLevelProcessor;

@@ -9,17 +9,13 @@ use Monolog\Logger;
 
 class IgnoreDeprecationHandler extends AbstractHandler
 {
-    public function __construct($level = Logger::DEBUG)
+    public function __construct(int|string $level = Logger::DEBUG)
     {
         parent::__construct($level, false);
     }
 
     public function handle(array $record): bool
     {
-        if (!isset($record['channel'], $record['message']) || $record['channel'] !== 'php') {
-            return false;
-        }
-
-        return false !== strpos($record['message'], 'User Deprecated');
+        return $record['channel'] === 'php' && str_contains($record['message'], 'User Deprecated');
     }
 }

@@ -11,39 +11,29 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
-/**
- * @internal
- */
+/** @internal */
 final class TokenCollectionFormatterTest extends TestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @var ObjectProphecy|TokenCollection
-     */
-    private $tokenCollectionMock;
+    /** @var TokenCollection|ObjectProphecy */
+    private ObjectProphecy $tokenCollection;
 
-    /**
-     * @var TokenCollectionFormatter
-     */
-    private $tokenCollectionFormatter;
+    private TokenCollectionFormatter $tokenCollectionFormatter;
 
     protected function setUp(): void
     {
-        $this->tokenCollectionMock = $this->prophesize(TokenCollection::class);
+        $this->tokenCollection = $this->prophesize(TokenCollection::class);
 
         $this->tokenCollectionFormatter = new TokenCollectionFormatter(
-            $this->tokenCollectionMock->reveal(),
-            "[%%token_collection%%]\n"
+            $this->tokenCollection->reveal(),
+            "[%%token_collection%%]\n",
         );
     }
 
-    /**
-     * @test
-     */
-    public function format_without_token(): void
+    public function testFormatWithoutToken(): void
     {
-        $this->tokenCollectionMock->getTokens()->willReturn([])->shouldBeCalled();
+        $this->tokenCollection->getTokens()->shouldBeCalled()->willReturn([]);
 
         $this->assertEquals("[%%]\n", $this->tokenCollectionFormatter->format([
             'extra' => [],
@@ -51,14 +41,11 @@ final class TokenCollectionFormatterTest extends TestCase
         ]));
     }
 
-    /**
-     * @test
-     */
-    public function format_with_token(): void
+    public function testFormatWithToken(): void
     {
-        $this->tokenCollectionMock->getTokens()->willReturn([
+        $this->tokenCollection->getTokens()->shouldBeCalled()->willReturn([
             'tokenA' => new Token('tokenA', 'tokenA_fake_value'),
-        ])->shouldBeCalled();
+        ]);
 
         $this->assertEquals("[%tokenA_fake_value%]\n", $this->tokenCollectionFormatter->format([
             'extra' => ['token_tokenA' => 'tokenA_fake_value'],

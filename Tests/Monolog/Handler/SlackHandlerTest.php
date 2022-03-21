@@ -10,25 +10,19 @@ use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
-/**
- * @internal
- */
+/** @internal */
 final class SlackHandlerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var SlackHandler */
-    private $slackHandler;
+    private SlackHandler $slackHandler;
 
     protected function setUp(): void
     {
         $this->slackHandler = new SlackHandler('', '');
     }
 
-    /**
-     * @test
-     */
-    public function is_not_handling(): void
+    public function testIsNotHandling(): void
     {
         $fakeRecord = [];
         $exclusionStrategy = $this->prophesize(ExclusionStrategyInterface::class);
@@ -43,10 +37,7 @@ final class SlackHandlerTest extends TestCase
         $this->assertFalse($this->slackHandler->isHandling($fakeRecord));
     }
 
-    /**
-     * @test
-     */
-    public function is_handling(): void
+    public function testIsHandling(): void
     {
         $fakeRecord = ['level' => Logger::CRITICAL];
         $exclusionStrategy = $this->prophesize(ExclusionStrategyInterface::class);

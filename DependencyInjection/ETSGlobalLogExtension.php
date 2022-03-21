@@ -9,14 +9,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
-/**
- * @internal
- */
+/** @internal */
 final class ETSGlobalLogExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
     public function load(array $configs, ContainerBuilder $container): void
     {
         $configuration = new Configuration();
@@ -33,7 +28,7 @@ final class ETSGlobalLogExtension extends Extension
         $container->setParameter('ets_global_log.handlers.slack.jira_url', $config['slack_handler']['jira_url']);
         $container->setParameter('ets_global_log.handlers.slack.kibana_url', $config['slack_handler']['kibana_url']);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
     }
 }

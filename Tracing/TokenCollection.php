@@ -27,10 +27,7 @@ namespace ETSGlobal\LogBundle\Tracing;
  */
 class TokenCollection implements \IteratorAggregate
 {
-    /**
-     * @var array<string, Token>
-     */
-    private $tokens = [];
+    private array $tokens = [];
 
     /**
      * Add a new token to the collection.
@@ -83,9 +80,6 @@ class TokenCollection implements \IteratorAggregate
         return $this;
     }
 
-    /**
-     * @return Token[]
-     */
     public function getTokens(): array
     {
         return $this->tokens;
@@ -106,18 +100,12 @@ class TokenCollection implements \IteratorAggregate
         return $this->tokens[$tokenName]->getValue();
     }
 
-    /**
-     * Get the values of all tokens.
-     *
-     * @return array<string>
-     */
+    /** Get the values of all tokens.*/
     public function getTokensValues(): array
     {
         return array_map(
-            static function (Token $token): string {
-                return $token->getValue();
-            },
-            $this->tokens
+            static fn (Token $token): string => $token->getValue(),
+            $this->tokens,
         );
     }
 
@@ -128,6 +116,6 @@ class TokenCollection implements \IteratorAggregate
 
     private function generateValue(string $tokenName): string
     {
-        return uniqid($tokenName.'_');
+        return uniqid($tokenName . '_');
     }
 }

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
-/**
- * @internal
- */
+/** @internal */
 final class AddClassLineContext implements ContentDataModifierInterface
 {
     public function modify(array &$contentData, array $record): void
@@ -17,7 +15,7 @@ final class AddClassLineContext implements ContentDataModifierInterface
 
         $url = $record['context']['class'];
         if (isset($record['context']['line'])) {
-            $url .= ':'.$record['context']['line'];
+            $url .= ':' . $record['context']['line'];
         }
 
         if (!isset($contentData['attachments'][0]['fields'])) {

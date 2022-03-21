@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ETSGlobal\LogBundle\DependencyInjection\CompilerPass;
 
 use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpClientDecorator;
+use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -19,22 +20,22 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class HttpClientPass implements CompilerPassInterface
 {
-    private const TOKEN_COLLECTION_SERVICE_ID = 'ets_global_log.tracing.token_collection';
+    private const DECORATOR_PRIORITY = 5;
 
     public function process(ContainerBuilder $container): void
     {
-        if (!$container->hasDefinition('ets_global_log.tracing.token_collection')) {
+        if (!$container->hasDefinition(TokenCollection::class)) {
             throw new \RuntimeException('The token collection service definition is missing.');
         }
 
         $taggedServices = $container->findTaggedServiceIds('http_client.client');
-        foreach ($taggedServices as $id => $attributes) {
+        foreach (array_keys($taggedServices) as $id) {
             $httpClientDefinition = $container->getDefinition($id);
 
             $decorator = new Definition(HttpClientDecorator::class);
-            $decorator->setDecoratedService($id);
+            $decorator->setDecoratedService($id, null, self::DECORATOR_PRIORITY);
             $decorator->setArgument('$httpClient', $httpClientDefinition);
-            $decorator->setArgument('$tokenCollection', new Reference(self::TOKEN_COLLECTION_SERVICE_ID));
+            $decorator->setArgument('$tokenCollection', new Reference(TokenCollection::class));
 
             $container->setDefinition(HttpClientDecorator::class, $decorator);
         }

@@ -7,24 +7,18 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddJiraLink;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @internal
- */
+/** @internal */
 final class AddJiraLinkTest extends TestCase
 {
-    /** @var AddJiraLink */
-    private $modifier;
+    private AddJiraLink $modifier;
 
     protected function setUp(): void
     {
         $this->modifier = new AddJiraLink('https://example.jira.com');
     }
 
-    /**
-     * @test
-     * @dataProvider modifyDataProvider
-     */
-    public function it_adds_jira_link(array $record, array $expectedContentData): void
+    /** @dataProvider modifyDataProvider */
+    public function testAddsJiraLink(array $record, array $expectedContentData): void
     {
         $contentData = [];
 
