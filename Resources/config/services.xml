@@ -5,53 +5,58 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <defaults autowire="true" autoconfigure="true"/>
-
-        <service class="ETSGlobal\LogBundle\Tracing\TokenCollection" public="true">
+        <service id="ETSGlobal\LogBundle\Tracing\TokenCollection" class="ETSGlobal\LogBundle\Tracing\TokenCollection" public="true">
             <call method="add">
                 <argument type="string">process</argument>
             </call>
         </service>
 
-        <service class="ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation" />
+        <service id="ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation" class="ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation">
+            <argument type="service" id="ETSGlobal\LogBundle\Tracing\TokenCollection"/>
+        </service>
 
-        <service class="ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber">
+        <service id="ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber" class="ETSGlobal\LogBundle\EventSubscriber\TracingEventSubscriber">
+            <argument type="service" id="ETSGlobal\LogBundle\Tracing\TokenCollection"/>
+            <argument type="service" id="ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpFoundation"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Processor\ChangeExceptionsLogLevelProcessor" public="false">
+        <service id="ETSGlobal\LogBundle\Monolog\Processor\ChangeExceptionsLogLevelProcessor" class="ETSGlobal\LogBundle\Monolog\Processor\ChangeExceptionsLogLevelProcessor" public="false">
             <argument type="string">%ets_global_log.custom_exceptions_levels%</argument>
             <argument type="string">%ets_global_log.http_exceptions_levels%</argument>
 
             <tag name="monolog.processor" />
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor" public="false">
+        <service id="ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor" class="ETSGlobal\LogBundle\Monolog\Processor\TokenCollectionProcessor" public="false">
+            <argument type="service" id="ETSGlobal\LogBundle\Tracing\TokenCollection" />
             <tag name="monolog.processor" />
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor" public="false">
+        <service id="ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor" class="ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor" public="false">
             <argument type="string">application</argument>
             <argument type="string">%ets_global_log.app_name%</argument>
 
             <tag name="monolog.processor" />
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter" public="false">
+        <service id="ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter" class="ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter" public="false">
+            <argument type="service" id="ETSGlobal\LogBundle\Tracing\TokenCollection" />
             <argument type="string">%ets_global_log.log_format%</argument>
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddClassLineContext" public="false" />
+        <service id="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddClassLineContext" class="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddClassLineContext" public="false" />
 
-        <service class="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddJiraLink" public="false">
+        <service id="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddJiraLink" class="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddJiraLink" public="false">
             <argument type="string">%ets_global_log.handlers.slack.jira_url%</argument>
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks" public="false">
+        <service id="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks" class="ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks" public="false">
             <argument type="string">%ets_global_log.handlers.slack.kibana_url%</argument>
+            <argument type="service" id="ETSGlobal\LogBundle\Tracing\TokenCollection" />
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy" public="true">
+        <service id="ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy" class="ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy" public="true">
             <argument type="collection">
                 <argument>400</argument>
                 <argument>401</argument>
@@ -62,9 +67,9 @@
             </argument>
         </service>
 
-        <service class="ETSGlobal\LogBundle\Monolog\Handler\IgnoreDeprecationHandler" />
+        <service id="ETSGlobal\LogBundle\Monolog\Handler\IgnoreDeprecationHandler" class="ETSGlobal\LogBundle\Monolog\Handler\IgnoreDeprecationHandler" />
 
-        <service class="ETSGlobal\LogBundle\Monolog\Handler\SlackHandler" public="false">
+        <service id="ETSGlobal\LogBundle\Monolog\Handler\SlackHandler" class="ETSGlobal\LogBundle\Monolog\Handler\SlackHandler" public="false">
             <argument type="string">%ets_global_log.handlers.slack.token%</argument>
             <argument type="string">%ets_global_log.handlers.slack.channel%</argument>
             <argument type="string">[%kernel.environment%] %ets_global_log.app_name%</argument>
