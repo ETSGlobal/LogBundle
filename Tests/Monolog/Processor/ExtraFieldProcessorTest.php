@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\ETSGlobal\LogBundle\Monolog\Processor;
 
 use ETSGlobal\LogBundle\Monolog\Processor\ExtraFieldProcessor;
+use Monolog\Level;
+use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
 
 /** @internal */
@@ -14,9 +16,12 @@ final class ExtraFieldProcessorTest extends TestCase
     {
         $processor = new ExtraFieldProcessor('foo', 'bar');
 
-        $record = [
-            'extra' => [],
-        ];
+        $record = new LogRecord(
+            new \DateTimeImmutable(),
+            'php',
+            Level::Info,
+            'great log',
+        );
 
         $newRecord = $processor->__invoke($record);
 

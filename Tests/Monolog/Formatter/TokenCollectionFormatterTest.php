@@ -7,6 +7,8 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Formatter;
 use ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter;
 use ETSGlobal\LogBundle\Tracing\Token;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
+use Monolog\Logger;
+use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -35,10 +37,16 @@ final class TokenCollectionFormatterTest extends TestCase
     {
         $this->tokenCollection->getTokens()->shouldBeCalled()->willReturn([]);
 
-        $this->assertEquals("[%%]\n", $this->tokenCollectionFormatter->format([
-            'extra' => [],
-            'context' => [],
-        ]));
+        $this->assertEquals("[%%]\n", $this->tokenCollectionFormatter->format(
+            new LogRecord(
+                new \DateTimeImmutable(),
+                'chan',
+                Logger::toMonologLevel(100),
+                'message',
+                [],
+                [],
+            ),
+        ));
     }
 
     public function testFormatWithToken(): void
@@ -47,9 +55,15 @@ final class TokenCollectionFormatterTest extends TestCase
             'tokenA' => new Token('tokenA', 'tokenA_fake_value'),
         ]);
 
-        $this->assertEquals("[%tokenA_fake_value%]\n", $this->tokenCollectionFormatter->format([
-            'extra' => ['token_tokenA' => 'tokenA_fake_value'],
-            'context' => [],
-        ]));
+        $this->assertEquals("[%tokenA_fake_value%]\n", $this->tokenCollectionFormatter->format(
+            new LogRecord(
+                new \DateTimeImmutable(),
+                'chan',
+                Logger::toMonologLevel(100),
+                'message',
+                [],
+                ['token_tokenA' => 'tokenA_fake_value'],
+            ),
+        ));
     }
 }

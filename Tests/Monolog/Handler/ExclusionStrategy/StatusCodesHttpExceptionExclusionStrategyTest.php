@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy;
 
 use ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy;
+use Monolog\Logger;
+use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -26,14 +28,30 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
 
     public function testDoesNotExcludeRecordWhenNoException(): void
     {
-        $this->assertFalse($this->statusCodesHttpExceptionExclusionStrategy->excludeRecord([]));
+        $this->assertFalse($this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(
+            new LogRecord(
+                new \DateTimeImmutable(),
+                'php',
+                Logger::toMonologLevel(100),
+                'great log',
+                ['exception' => new \stdClass()],
+                ['token_tokenA' => 'tokenA_fake_value'],
+            ),
+        ));
     }
 
     public function testDoesNotExcludeRecordWhenInvalidException(): void
     {
         $this->assertFalse(
             $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(
-                ['context' => ['exception' => new \stdClass()]],
+                new LogRecord(
+                    new \DateTimeImmutable(),
+                    'php',
+                    Logger::toMonologLevel(100),
+                    'great log',
+                    ['exception' => new \stdClass()],
+                    ['token_tokenA' => 'tokenA_fake_value'],
+                ),
             ),
         );
     }
@@ -50,7 +68,16 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
     public function testDoesNotExcludeRecordsWhenStatusCodesNotExcluded(\Throwable $exception): void
     {
         $this->assertFalse(
-            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(['context' => ['exception' => $exception]]),
+            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(
+                new LogRecord(
+                    new \DateTimeImmutable(),
+                    'php',
+                    Logger::toMonologLevel(100),
+                    'great log',
+                    ['exception' => $exception],
+                    ['token_tokenA' => 'tokenA_fake_value'],
+                ),
+            ),
         );
     }
 
@@ -66,7 +93,16 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
     public function testExcludesRecordsWhenExcludedExceptionCodes(\Throwable $exception): void
     {
         $this->assertTrue(
-            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(['context' => ['exception' => $exception]]),
+            $this->statusCodesHttpExceptionExclusionStrategy->excludeRecord(
+                new LogRecord(
+                    new \DateTimeImmutable(),
+                    'php',
+                    Logger::toMonologLevel(100),
+                    'great log',
+                    ['exception' => $exception],
+                    ['token_tokenA' => 'tokenA_fake_value'],
+                ),
+            ),
         );
     }
 }

@@ -7,13 +7,10 @@ namespace ETSGlobal\LogBundle\Monolog\Handler;
 use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\ContentDataModifierInterface;
 use ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\ExclusionStrategyInterface;
 use Monolog\Handler\SlackHandler as BaseSlackHandler;
-use Monolog\Logger;
+use Monolog\Level;
+use Monolog\LogRecord;
 
-/**
- * @internal
- *
- * @phpstan-import-type Level from Logger
- */
+/** @internal */
 final class SlackHandler extends BaseSlackHandler
 {
     private array $exclusionStrategies = [];
@@ -22,7 +19,6 @@ final class SlackHandler extends BaseSlackHandler
 
     /**
      * {@inheritdoc}
-     * @phpstan-param Level $level
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -31,7 +27,7 @@ final class SlackHandler extends BaseSlackHandler
         ?string $username = null,
         bool $useAttachment = true,
         ?string $iconEmoji = null,
-        int $level = Logger::CRITICAL,
+        int|string|Level $level = Level::Critical,
         bool $bubble = true,
         bool $useShortAttachment = false,
         bool $includeContextAndExtra = false,
@@ -61,7 +57,7 @@ final class SlackHandler extends BaseSlackHandler
         $this->contentDataModifiers[] = $contentDataModifier;
     }
 
-    public function isHandling(array $record): bool
+    public function isHandling(LogRecord $record): bool
     {
         foreach ($this->exclusionStrategies as $exclusionStrategy) {
             if (true === $exclusionStrategy->excludeRecord($record)) {
@@ -73,7 +69,7 @@ final class SlackHandler extends BaseSlackHandler
     }
 
     /** phpcs:disable */
-    protected function prepareContentData(array $record): array
+    protected function prepareContentData(LogRecord $record): array
     {
         $dataArray = parent::prepareContentData($record);
 
