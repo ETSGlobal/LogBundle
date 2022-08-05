@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace ETSGlobal\LogBundle\Monolog\Processor;
 
-use Monolog\Logger;
+use Monolog\Level;
+use Monolog\LogRecord;
 use Monolog\Processor\ProcessorInterface;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
@@ -15,9 +16,6 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
  * HttpNotFoundException we want to lower the log level to something like INFO
  * because there is nothing wrong with our application.
  *
- * @phpstan-import-type LevelName from Logger
- * @phpstan-import-type Record from Logger
- * @phpstan-import-type Level from Logger
  * @internal
  */
 final class ChangeExceptionsLogLevelProcessor implements ProcessorInterface
@@ -26,7 +24,7 @@ final class ChangeExceptionsLogLevelProcessor implements ProcessorInterface
     {
     }
 
-    private function determineLogLevel(\Throwable $throwable, int $currentLevel): int
+    private function determineLogLevel(\Throwable $throwable, int $currentLevel): Level
     {
         if ($throwable instanceof HttpExceptionInterface) {
             return $this->determineLogLevelHttpException($throwable, $currentLevel);
@@ -36,34 +34,38 @@ final class ChangeExceptionsLogLevelProcessor implements ProcessorInterface
 
         foreach ($exceptions as $exception) {
             if ($throwable instanceof $exception) {
-                return $this->customExceptionsConfig[$exception];
+                return Level::from($this->customExceptionsConfig[$exception]);
             }
         }
 
-        return $currentLevel;
+        return Level::from($currentLevel);
     }
 
-    private function determineLogLevelHttpException(HttpExceptionInterface $httpException, int $currentLevel): int
-    {
+    private function determineLogLevelHttpException(
+        HttpExceptionInterface $httpException,
+        int $currentLevel,
+    ): Level {
         $exceptions = array_keys($this->httpExceptionsConfig);
 
         foreach ($exceptions as $exception) {
             if ($httpException instanceof $exception) {
-                return $this->httpExceptionsConfig[$exception];
+                return Level::from($this->httpExceptionsConfig[$exception]);
             }
         }
 
-        return $currentLevel;
+        return Level::from($currentLevel);
     }
 
-    /** @phpstan-return Record */
-    public function __invoke(array $record): array
+    public function __invoke(LogRecord $record): LogRecord
     {
-        if ($record['level'] < 400) {
+        /** @var int $level */
+        $level = $record['level'];
+
+        if ($level < 400) {
             return $record;
         }
 
-        if (!isset($record['context']['exception'])) {
+        if (!is_array($record['context']) || !isset($record['context']['exception'])) {
             return $record;
         }
 
@@ -75,12 +77,12 @@ final class ChangeExceptionsLogLevelProcessor implements ProcessorInterface
         }
 
         // Change the log level if necessary
-        $modifiedLogLevel = $this->determineLogLevel($throwable, $record['level']);
+        $modifiedLogLevel = $this->determineLogLevel($throwable, $level);
 
-        /** @phpstan-var Level $modifiedLogLevel */
-        $record['level'] = $modifiedLogLevel;
-        $record['level_name'] = Logger::getLevelName($modifiedLogLevel);
+        if ($level === $modifiedLogLevel->value) {
+            return $record;
+        }
 
-        return $record;
+        return $record->with(level: $modifiedLogLevel);
     }
 }

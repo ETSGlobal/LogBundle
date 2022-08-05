@@ -7,6 +7,7 @@ namespace ETSGlobal\LogBundle\Monolog\Formatter;
 use ETSGlobal\LogBundle\Tracing\Token;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Monolog\Formatter\LineFormatter;
+use Monolog\LogRecord;
 
 /** @internal */
 final class TokenCollectionFormatter extends LineFormatter
@@ -21,7 +22,7 @@ final class TokenCollectionFormatter extends LineFormatter
         parent::__construct($originalFormat, $dateFormat, $allowInlineLineBreaks, $ignoreEmptyContextAndExtra);
     }
 
-    public function format(array $record): string
+    public function format(LogRecord $record): string
     {
         $this->format = str_replace(
             '%token_collection%',

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\ETSGlobal\LogBundle\Monolog\Handler;
 
 use ETSGlobal\LogBundle\Monolog\Handler\IgnoreDeprecationHandler;
+use Monolog\Logger;
+use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
 
 class IgnoreDeprecationHandlerTest extends TestCase
@@ -13,31 +15,43 @@ class IgnoreDeprecationHandlerTest extends TestCase
     {
         return [
             [
-                [
-                    'channel' => 'php',
-                    'message' => 'User Deprecated: ',
-                ],
+                new LogRecord(
+                    new \DateTimeImmutable(),
+                    'php',
+                    Logger::toMonologLevel(100),
+                    'User Deprecated: ',
+                    [],
+                    ['token_tokenA' => 'tokenA_fake_value'],
+                ),
                 true,
             ],
             [
-                [
-                    'channel' => 'something else',
-                    'message' => 'User Deprecated: ',
-                ],
+                new LogRecord(
+                    new \DateTimeImmutable(),
+                    'something else',
+                    Logger::toMonologLevel(100),
+                    'User Deprecated: ',
+                    [],
+                    ['token_tokenA' => 'tokenA_fake_value'],
+                ),
                 false,
             ],
             [
-                [
-                    'channel' => 'php',
-                    'message' => 'great log',
-                ],
+                new LogRecord(
+                    new \DateTimeImmutable(),
+                    'php',
+                    Logger::toMonologLevel(100),
+                    'great log',
+                    [],
+                    ['token_tokenA' => 'tokenA_fake_value'],
+                ),
                 false,
             ],
         ];
     }
 
     /** @dataProvider provideData */
-    public function testHandle(array $record, bool $expected): void
+    public function testHandle(LogRecord $record, bool $expected): void
     {
         $handler = new IgnoreDeprecationHandler();
         $this->assertSame($expected, $handler->handle($record));

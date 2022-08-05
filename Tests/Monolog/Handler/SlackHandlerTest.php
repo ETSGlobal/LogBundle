@@ -6,7 +6,9 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Handler;
 
 use ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\ExclusionStrategyInterface;
 use ETSGlobal\LogBundle\Monolog\Handler\SlackHandler;
+use Monolog\Level;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 
@@ -24,13 +26,19 @@ final class SlackHandlerTest extends TestCase
 
     public function testIsNotHandling(): void
     {
-        $fakeRecord = [];
+        $fakeRecord = new LogRecord(
+            new \DateTimeImmutable(),
+            'chan',
+            Logger::toMonologLevel(100),
+            'message',
+            [],
+            ['token_tokenA' => 'tokenA_fake_value'],
+        );
         $exclusionStrategy = $this->prophesize(ExclusionStrategyInterface::class);
         $exclusionStrategy
             ->excludeRecord($fakeRecord)
-            ->willReturn(true)
             ->shouldBeCalled()
-        ;
+            ->willReturn(true);
 
         $this->slackHandler->addExclusionStrategy($exclusionStrategy->reveal());
 
@@ -39,13 +47,20 @@ final class SlackHandlerTest extends TestCase
 
     public function testIsHandling(): void
     {
-        $fakeRecord = ['level' => Logger::CRITICAL];
+        $fakeRecord = new LogRecord(
+            new \DateTimeImmutable(),
+            'chan',
+            Logger::toMonologLevel(Level::Critical),
+            'message',
+            [],
+            ['token_tokenA' => 'tokenA_fake_value'],
+        );
+
         $exclusionStrategy = $this->prophesize(ExclusionStrategyInterface::class);
         $exclusionStrategy
             ->excludeRecord($fakeRecord)
-            ->willReturn(false)
             ->shouldBeCalled()
-        ;
+            ->willReturn(false);
 
         $this->slackHandler->addExclusionStrategy($exclusionStrategy->reveal());
 
