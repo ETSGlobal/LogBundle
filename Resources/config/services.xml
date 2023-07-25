@@ -40,6 +40,10 @@
             <tag name="monolog.processor" />
         </service>
 
+        <service id="Monolog\Processor\IntrospectionProcessor" class="Monolog\Processor\IntrospectionProcessor" public="false">
+            <tag name="monolog.processor" />
+        </service>
+
         <service id="ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter" class="ETSGlobal\LogBundle\Monolog\Formatter\TokenCollectionFormatter" public="false">
             <argument type="service" id="ETSGlobal\LogBundle\Tracing\TokenCollection" />
             <argument type="string">%ets_global_log.log_format%</argument>
