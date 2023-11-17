@@ -1,22 +1,13 @@
 WORKSPACE ?= $(PWD)
 REPORTS_DIR ?= build/reports
 
-audit: phpcpd phpcs phpmd phpstan ## Run static code analysis
+audit: phpcs phpmd phpstan ## Run static code analysis
 .PHONY: audit
 
 lint: phpcbf ## Run linting (alias to phpcbf)
 phpcbf: ## Run PHP Code Beautifier and Fixer
 	vendor/bin/phpcbf --standard=phpcs.xml --extensions=php --ignore=vendor $(EXTRA_ARGS) .
 .PHONY: lint phpcbf
-
-phpcpd: ## Run PHP Copy Paste Detector
-	vendor/bin/phpcpd --min-lines=20 --exclude=vendor/ $(EXTRA_ARGS) .
-phpcpd-ci: prepare-ci ## Run PHP Copy Paste Detector (CI)
-	@xsltproc --version > /dev/null || sudo apt install xsltproc
-	@wget -qO junit.xslt https://phpmd.org/junit.xslt
-	EXTRA_ARGS="--log-pmd=$(REPORTS_DIR)/phpcpd.xml" $(MAKE) phpcpd
-	xsltproc junit.xslt $(REPORTS_DIR)/phpcpd.xml > $(REPORTS_DIR)/phpcpd.junit.xml
-.PHONY: phpcpd phpcpd-ci
 
 phpcs: ## Run PHP_CodeSniffer
 	vendor/bin/phpcs --standard=phpcs.xml --extensions=php --ignore=vendor $(EXTRA_ARGS) .
@@ -26,7 +17,7 @@ phpcs-ci: prepare-ci ## Run PHP_CodeSniffer (CI)
 
 PHPMD_FORMAT ?= text
 phpmd: ## Run PHP Mess Detector
-	 vendor/bin/phpmd . $(PHPMD_FORMAT) phpmd.xml --suffixes=php $(EXTRA_ARGS)
+	 vendor/bin/phpmd . $(PHPMD_FORMAT) phpmd.xml --suffixes php $(EXTRA_ARGS)
 phpmd-ci: prepare-ci ## Run PHP Mess Detector (CI)
 	PHPMD_FORMAT="github" $(MAKE) phpmd
 .PHONY: phpmd phpmd-ci

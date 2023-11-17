@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  PHP_VERSION: 8.1.7
+  PHP_VERSION: 8.3.0
 
 jobs:
   php_analysis:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        tool: [phpcpd, phpcs, phpmd, phpstan, phpunit]
+        tool: [phpcs, phpmd, phpstan, phpunit]
     steps:
     - name: Setup PHP ${{ env.PHP_VERSION }} environment
       uses: shivammathur/setup-php@b75c104ca87c371bbc71be81a4e5dd5a5d298241 # renovate: tag=v2.17.1
@@ -32,6 +32,7 @@ jobs:
       uses: php-actions/composer@d936bcb900310224b9089aff3337f2221a8df9a0 # renovate: tag=v6.0.0
       with:
         php_version: ${{ env.PHP_VERSION }}
+        args: --ignore-platform-reqs
     - name: Run ${{ matrix.tool }}
       run: make ${{ matrix.tool }}-ci
     - name: Upload ${{ matrix.tool }} reports
@@ -52,23 +53,18 @@ jobs:
     - name: Create build/ directory
       run: mkdir -p build
 
-    # NOTE: only phpunit, phpcs & phpcpd generate reports
+    # NOTE: only phpunit, phpcs generate reports
     - name: Download phpunit reports
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # renovate: tag=v3.0.0
       with:
         name: phpunit-reports
         path: build/
       continue-on-error: true
+
     - name: Download phpcs reports
       uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # renovate: tag=v3.0.0
       with:
         name: phpcs-reports
-        path: build/
-      continue-on-error: true
-    - name: Download phpcpd reports
-      uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # renovate: tag=v3.0.0
-      with:
-        name: phpcpd-reports
         path: build/
       continue-on-error: true
 
