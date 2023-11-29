@@ -23,7 +23,7 @@
         "etsglobal/php-static-analysis": "^2.0",
         "slevomat/coding-standard": "^7.0 || ^8.0",
         "squizlabs/php_codesniffer": "^3.6",
-        "symfony/phpunit-bridge": "^6.0",
+        "symfony/phpunit-bridge": "^6.0 || ^7.0",
         "symfony/http-client-contracts": "^3.0",
         "sebastian/phpcpd":  "^6.0",
         "phpmd/phpmd": "^2.6"
