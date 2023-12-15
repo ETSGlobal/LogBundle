@@ -4,34 +4,23 @@
     "description": "",
     "license": "MIT",
     "require": {
-        "php": "^8.1",
+        "php": "^8.3",
         "ext-json": "*",
-        "monolog/monolog": "^3.0",
-        "symfony/config": "^6.0",
-        "symfony/console": "^6.0",
-        "symfony/dependency-injection": "^6.0",
-        "symfony/http-kernel": "^6.0",
-        "symfony/monolog-bundle": "^3.3"
+        "symfony/config": "^7.0",
+        "symfony/console": "^7.0",
+        "symfony/dependency-injection": "^7.0",
+        "symfony/http-kernel": "^7.0",
+        "symfony/monolog-bundle": "^3.10"
     },
     "require-dev": {
-        "jangregor/phpstan-prophecy": "^1.0",
-        "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0",
-        "phpunit/phpunit": "^9.5",
-        "psr/http-message": "^1.0 || ^2.0",
-        "etsglobal/php-static-analysis": "^2.0",
-        "slevomat/coding-standard": "^7.0 || ^8.0",
-        "squizlabs/php_codesniffer": "^3.6",
-        "symfony/phpunit-bridge": "^6.0",
-        "symfony/http-client-contracts": "^3.0",
-        "sebastian/phpcpd":  "^6.0",
-        "phpmd/phpmd": "^2.6"
+        "etsglobal/php-static-analysis": "^3.0",
+        "symfony/phpunit-bridge": "^7.0",
+        "symfony/http-client-contracts": "^3.4"
     },
     "suggest": {
-        "csa/guzzle-bundle": "Allow token forwarding through Guzzle HTTP calls",
         "symfony/http-client": "Allow token forwarding through Symfony's HttpClient HTTP calls"
     },
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "ETSGlobal\\LogBundle\\": "\\"
