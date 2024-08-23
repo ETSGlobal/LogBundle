@@ -7,6 +7,7 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy;
 use ETSGlobal\LogBundle\Monolog\Handler\ExclusionStrategy\StatusCodesHttpExceptionExclusionStrategy;
 use Monolog\Logger;
 use Monolog\LogRecord;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -56,7 +57,7 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
         );
     }
 
-    public function exceptionProvider(): array
+    public static function exceptionProvider(): array
     {
         return [
             [new ConflictHttpException()],
@@ -64,7 +65,7 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
         ];
     }
 
-    /** @dataProvider exceptionProvider */
+    #[DataProvider('exceptionProvider')]
     public function testDoesNotExcludeRecordsWhenStatusCodesNotExcluded(\Throwable $exception): void
     {
         $this->assertFalse(
@@ -81,7 +82,7 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
         );
     }
 
-    public function excludedExceptionProvider(): array
+    public static function excludedExceptionProvider(): array
     {
         return [
             [new BadRequestHttpException()],
@@ -89,7 +90,7 @@ final class StatusCodesHttpExceptionExclusionStrategyTest extends TestCase
         ];
     }
 
-    /** @dataProvider excludedExceptionProvider */
+    #[DataProvider('excludedExceptionProvider')]
     public function testExcludesRecordsWhenExcludedExceptionCodes(\Throwable $exception): void
     {
         $this->assertTrue(

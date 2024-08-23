@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class HttpClientPass implements CompilerPassInterface
 {
-    private const DECORATOR_PRIORITY = 5;
+    private const int DECORATOR_PRIORITY = 5;
 
     public function process(ContainerBuilder $container): void
     {

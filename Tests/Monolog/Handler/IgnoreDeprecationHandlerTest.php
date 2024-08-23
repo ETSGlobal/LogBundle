@@ -7,11 +7,12 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Handler;
 use ETSGlobal\LogBundle\Monolog\Handler\IgnoreDeprecationHandler;
 use Monolog\Logger;
 use Monolog\LogRecord;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class IgnoreDeprecationHandlerTest extends TestCase
 {
-    public function provideData(): array
+    public static function provideData(): array
     {
         return [
             [
@@ -50,7 +51,7 @@ class IgnoreDeprecationHandlerTest extends TestCase
         ];
     }
 
-    /** @dataProvider provideData */
+    #[DataProvider('provideData')]
     public function testHandle(LogRecord $record, bool $expected): void
     {
         $handler = new IgnoreDeprecationHandler();

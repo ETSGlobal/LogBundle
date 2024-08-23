@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
 use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddClassLineContext;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /** @internal */
@@ -17,7 +18,7 @@ final class AddClassLineContextTest extends TestCase
         $this->modifier = new AddClassLineContext();
     }
 
-    /** @dataProvider modifyDataProvider */
+    #[DataProvider('modifyDataProvider')]
     public function testAddsClassLineToAttachements(array $record, array $expectedContentData): void
     {
         $contentData = [];
@@ -27,7 +28,7 @@ final class AddClassLineContextTest extends TestCase
         $this->assertEquals($expectedContentData, $contentData);
     }
 
-    public function modifyDataProvider(): array
+    public static function modifyDataProvider(): array
     {
         return [
             [

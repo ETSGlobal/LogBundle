@@ -6,6 +6,7 @@ namespace Tests\ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 
 use ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier\AddKibanaTokenFilterLinks;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /** @internal */
@@ -25,7 +26,7 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
         );
     }
 
-    /** @dataProvider modifyDataProvider */
+    #[DataProvider('modifyDataProvider')]
     public function testAddsTokensToContents(array $record, array $tokens, array $expectedContentData): void
     {
         $contentData = [];
@@ -39,7 +40,7 @@ final class AddKibanaTokenFilterLinksTest extends TestCase
         $this->assertEquals($expectedContentData, $contentData);
     }
 
-    public function modifyDataProvider(): array
+    public static function modifyDataProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return [
