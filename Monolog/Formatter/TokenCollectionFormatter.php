@@ -13,8 +13,8 @@ use Monolog\LogRecord;
 final class TokenCollectionFormatter extends LineFormatter
 {
     public function __construct(
-        private TokenCollection $tokenCollection,
-        private ?string $originalFormat = null,
+        private readonly TokenCollection $tokenCollection,
+        private readonly ?string $originalFormat = null,
         ?string $dateFormat = null,
         bool $allowInlineLineBreaks = false,
         bool $ignoreEmptyContextAndExtra = false,

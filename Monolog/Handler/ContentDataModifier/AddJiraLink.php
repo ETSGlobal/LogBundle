@@ -7,16 +7,16 @@ namespace ETSGlobal\LogBundle\Monolog\Handler\ContentDataModifier;
 /** @internal */
 final class AddJiraLink implements ContentDataModifierInterface
 {
-    private const JIRA_PATH = '/secure/CreateIssue.jspa';
+    private const string JIRA_PATH = '/secure/CreateIssue.jspa';
 
-    private const URI_PARAMS = [
+    private const array URI_PARAMS = [
         'pid=10631', // Project ID
         'issueType=1', // Bug
         'summary=%1$s', // Replaced by log message
         'description=%1$s', // Replaced by log message
     ];
 
-    public function __construct(private string $jiraUrl)
+    public function __construct(private readonly string $jiraUrl)
     {
     }
 

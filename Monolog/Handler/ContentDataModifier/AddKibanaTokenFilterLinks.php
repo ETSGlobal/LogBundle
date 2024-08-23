@@ -10,9 +10,9 @@ use ETSGlobal\LogBundle\Tracing\TokenCollection;
 final class AddKibanaTokenFilterLinks implements ContentDataModifierInterface
 {
     // phpcs:disable Generic.Files.LineLength.TooLong
-    private const KIBANA_URI_PATTERN = '#/?_g=(filters:!(),time:(from:now-24h,to:now))&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,key:%1$s,negate:!f,params:(query:%2$s),type:phrase),query:(match_phrase:(%1$s:%2$s)))),interval:auto,query:(language:kuery,query:\'\'),sort:!())';
+    private const string KIBANA_URI_PATTERN = '#/?_g=(filters:!(),time:(from:now-24h,to:now))&_a=(columns:!(_source),filters:!((\'$state\':(store:appState),meta:(alias:!n,disabled:!f,key:%1$s,negate:!f,params:(query:%2$s),type:phrase),query:(match_phrase:(%1$s:%2$s)))),interval:auto,query:(language:kuery,query:\'\'),sort:!())';
 
-    public function __construct(private string $kibanaUrl, private TokenCollection $tokenCollection)
+    public function __construct(private readonly string $kibanaUrl, private readonly TokenCollection $tokenCollection)
     {
     }
 

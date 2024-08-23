@@ -18,11 +18,13 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /** @internal */
 final class TracingEventSubscriber implements EventSubscriberInterface
 {
-    private const HIGHEST_PRIORITY = 512;
-    private const LOWEST_PRIORITY = -512;
+    private const int HIGHEST_PRIORITY = 512;
+    private const int LOWEST_PRIORITY = -512;
 
-    public function __construct(private TokenCollection $tokenCollection, private HttpFoundation $httpFoundation)
-    {
+    public function __construct(
+        private readonly TokenCollection $tokenCollection,
+        private readonly HttpFoundation $httpFoundation,
+    ) {
     }
 
     public function onKernelRequest(RequestEvent $event): void
