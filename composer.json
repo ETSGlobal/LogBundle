@@ -10,13 +10,13 @@
         "symfony/config": "^7.0",
         "symfony/console": "^7.0",
         "symfony/dependency-injection": "^7.0",
+        "symfony/http-client": "^7.0",
         "symfony/http-kernel": "^7.0",
         "symfony/monolog-bundle": "^3.10"
     },
     "require-dev": {
         "etsglobal/php-static-analysis": "^3.0",
-        "symfony/phpunit-bridge": "^7.0",
-        "symfony/http-client-contracts": "^3.4"
+        "symfony/phpunit-bridge": "^7.0"
     },
     "suggest": {
         "symfony/http-client": "Allow token forwarding through Symfony's HttpClient HTTP calls"
