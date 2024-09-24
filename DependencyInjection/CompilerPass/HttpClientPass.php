@@ -8,7 +8,6 @@ use ETSGlobal\LogBundle\Tracing\Plugins\Symfony\HttpClientDecorator;
 use ETSGlobal\LogBundle\Tracing\TokenCollection;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -29,15 +28,13 @@ class HttpClientPass implements CompilerPassInterface
         }
 
         $taggedServices = $container->findTaggedServiceIds('http_client.client');
+
         foreach (array_keys($taggedServices) as $id) {
-            $httpClientDefinition = $container->getDefinition($id);
-
-            $decorator = new Definition(HttpClientDecorator::class);
-            $decorator->setDecoratedService($id, null, self::DECORATOR_PRIORITY);
-            $decorator->setArgument('$httpClient', $httpClientDefinition);
-            $decorator->setArgument('$tokenCollection', new Reference(TokenCollection::class));
-
-            $container->setDefinition(HttpClientDecorator::class, $decorator);
+            $container
+                ->register($id . '_decorator', HttpClientDecorator::class)
+                ->setDecoratedService($id, priority: self::DECORATOR_PRIORITY)
+                ->setArgument('$client', $container->getDefinition($id))
+                ->setArgument('$tokenCollection', new Reference(TokenCollection::class));
         }
     }
 }
