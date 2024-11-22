@@ -4,7 +4,7 @@
     "description": "",
     "license": "MIT",
     "require": {
-        "php": "^8.3 || ^8.4",
+        "php": "^8.4",
         "ext-json": "*",
         "ext-mbstring": "*",
         "graylog2/gelf-php": "^2.0",
@@ -16,7 +16,7 @@
         "symfony/monolog-bundle": "^3.10"
     },
     "require-dev": {
-        "etsglobal/php-static-analysis": "^3.0",
+        "etsglobal/php-static-analysis": "^3.3",
         "symfony/phpunit-bridge": "^7.0"
     },
     "suggest": {
@@ -41,5 +41,15 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/ETSGlobal/php-static-analysis"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/ETSGlobal/phiremock-client"
+        }
+    ]
 }
