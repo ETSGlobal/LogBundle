@@ -24,6 +24,11 @@ class LogTerminateSubscriber implements EventSubscriberInterface, LoggerAwareInt
     public function onKernelTerminate(PostResponseEvent $event): void
     {
         $request = $event->getRequest();
+
+        if (self::logDisabled($request)) {
+            return;
+        }
+
         $startTime = $request->attributes->get('__start_time', 0);
 
         $content = $event->getResponse()->getContent() !== false ? $event->getResponse()->getContent() : '';

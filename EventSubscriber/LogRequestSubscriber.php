@@ -24,7 +24,12 @@ class LogRequestSubscriber implements EventSubscriberInterface, LoggerAwareInter
     public function onKernelRequest(GetResponseEvent $event): void
     {
         $request = $event->getRequest();
-        $request->attributes->set('__start_time', microtime(true));
+
+        if (self::logDisabled($request)) {
+            return;
+        }
+
+        $request->attributes->set('__start_time', \microtime(true));
 
         $isContentExceed = $this->isContentExceedMaxSize($request->getContent());
 
@@ -38,7 +43,7 @@ class LogRequestSubscriber implements EventSubscriberInterface, LoggerAwareInter
                     'query' => $request->query->all(),
                     'request' => $request->request->all(),
                     'content' => $request->getContent(),
-                    'memory' => memory_get_usage(),
+                    'memory' => \memory_get_usage(),
                 ],
             );
 
@@ -54,7 +59,7 @@ class LogRequestSubscriber implements EventSubscriberInterface, LoggerAwareInter
                 'query' => $request->query->all(),
                 'request' => $request->request->all(),
                 'content' => $this->splitContent($request->getContent()),
-                'memory' => memory_get_usage(),
+                'memory' => \memory_get_usage(),
             ],
         );
     }
